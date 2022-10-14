@@ -15,6 +15,9 @@ switch ($do) {
     case 'load-by-id':
         loadBrandById();
         break;
+    case 'save-edit':
+        saveEdit();
+        break;    
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -83,6 +86,28 @@ function saveAdd(){
 
     try {
         $model->store("m_brand", $data, "Admin");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+    hasSuccess("Berhasil Menyimpan Brand ".$data['name']);
+}
+
+function saveEdit(){
+
+    $model = new TransModel;
+    $data = [
+        "name" => $_POST['name'],
+        "aseet_namespace" => $_POST['newsletter'],
+        "domain" => $_POST['domain'],
+        "service_id" => $_POST['service']
+    ];
+
+    $where = [
+        "id" => $_POST['id']
+    ];
+
+    try {
+        $model->update("m_brand", $data, $where, "Admin");
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }

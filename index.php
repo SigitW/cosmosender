@@ -14,10 +14,7 @@
             url : '<?= $baseurl ?>/src/blast-rule-api.php',
             method : "POST",
             data : {do:"load"},
-            success:function(res){
-
-                console.log(res);
-                
+            success:function(res){                
                 if (res.data.length > 0){
                     let str = '';
                     $.each(res.data, function(i, item){
