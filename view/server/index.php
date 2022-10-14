@@ -7,7 +7,7 @@
     <div class="mb-1 text-end">
         <button class="btn btn-sm btn-light" id="btn-add"><i class="bi bi-plus-lg"></i> Add</button>
     </div>
-    <div>
+    <div class="over-x">
         <table class="table table-dark table-striped table-hover">
             <thead>
                 <tr>
@@ -32,13 +32,13 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Server</h1>
+                <h1 class="modal-title fs-5" id="modal-label">Add Server</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
 
                 <div class="alert alert-warning display-none mb-3"></div>
-
+                <input type="hidden" name="" id="id">
                 <label for="" class="mb-1"> Nama Server</label>
                 <input type="text" name="" id="name" class="form-control mb-3">
                 <label for="" class="mb-1"> Domain</label>
@@ -47,7 +47,7 @@
                 <input type="color" name="" id="color" class="ms-3 mb-3"> 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success" id="btn-save-add"><i class="bi bi-check-lg"></i> Save</button>
+                <button type="button" class="btn btn-sm btn-success" id="btn-save"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@
                             '<td align="center" style="vertical-align:middle">'+formWarna(item.color)+'</td>'+
                             '<td>'+item.created_at+'</td>'+
                             '<td>'+item.created_who+'</td>'+
-                            '<td><span class="btn-edit"><i class="bi bi-pencil-square"></i> Edit</span></td>'+
+                            '<td><span class="btn-edit" onclick="showEdit(\''+item.id+'\')"><i class="bi bi-pencil-square"></i> Edit</span></td>'+
                             '</tr>';
                     });
                     $("#table-body").html(str); 
@@ -91,11 +91,45 @@
 
     $("#btn-add").click(function(){
         $("#modal-add").modal("show");
+        $("modal-label").html("Add Server");
+        $("#name").val("");
+        $("#domain").val("");
+        $("#color").val("");
         $(".alert-warning").hide();
+        $("#btn-save").attr("onclick", "store()");
     });
 
-    $("#btn-save-add").click(function(){
+    function showEdit(id){
+        $("#modal-add").modal("show");
+        $("modal-label").html("Edit Server");
+        $("#btn-save").attr("onclick", "update()");
         
+        $.ajax({
+            url : '<?= $baseurl ?>src/server-api.php',
+            method : "POST",
+            data : {do:"edit"},
+            success:function(res){
+                if (res.code == "200"){
+                    if(res.data.length > 0){
+                        const item = res.data[0];
+                        $("#id").val(item.id);
+                        $("#name").val(item.name);
+                        $("#domain").val(item.domain);
+                        $("#color").val(item.color);
+                        $(".alert-warning").hide();
+                    }
+                } else {
+                    $(".alert-warning").fadeIn();
+                    $(".alert-warning").html(res);
+                }
+            }, error:function(er){
+                $(".alert-warning").fadeIn();
+                $(".alert-warning").html(er.responseText);
+            }
+        });
+    }
+
+    function store(){
         const name      = $("#name").val();
         const domain    = $("#domain").val();
         const color     = $("#color").val();
@@ -123,7 +157,7 @@
                 $(".alert-warning").html(er.responseJSON.message);
             }
         })
-    });
+    }
 
     function formWarna(warna){
         return '<div class="rounded-circle" style="width:20px;height:20px;background-color:'+warna+'"></div>'

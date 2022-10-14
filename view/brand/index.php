@@ -51,7 +51,7 @@
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success" id="btn-save-add"><i class="bi bi-check-lg"></i> Save</button>
+                <button type="button" class="btn btn-sm btn-success" id="btn-save"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </div>
     </div>
@@ -117,12 +117,11 @@
         $("#modal-add").modal("show");
         $(".alert-warning").hide();
         $("#modal-label").html("Add Brand");
-
         $("#name").val("");
         $("#domain").val("");
         $("#aseet_namespace").val("");
         $("#sel-service").val("");
-
+        $("#btn-save").attr("onclick", "store()");
         loadService();
     });
 
@@ -130,6 +129,7 @@
         $("#modal-add").modal("show");
         $(".alert-warning").hide();
         $("#modal-label").html("Edit Brand");
+        $("#btn-save").attr("onclick", "update()");
         loadService();
 
         $.ajax({
@@ -152,7 +152,36 @@
         })
     }
 
-    function saveEdit(){
+    function store(){
+        const name              = $("#name").val();
+        const domain            = $("#domain").val();
+        const newsletter        = $("#aseet_namespace").val();
+        const service           = $("#sel-service option:selected").val();
+
+        $.ajax({
+            url : '<?= $baseurl ?>src/brand-api.php',
+            method : "POST",
+            data : {
+                do:"save-add", 
+                name : name,
+                domain : domain,
+                newsletter : newsletter,
+                service : service
+            }, success : function(res){
+                if (res.code == "200"){
+                    $("#modal-add").modal("hide");
+                    $(".alert-success").fadeIn();
+                    $(".alert-success").html(res.message);
+                    load();
+                }
+            }, error : function(er){
+                $(".alert-warning").fadeIn();
+                $(".alert-warning").html(er.responseText);
+            }
+        })
+    }
+
+    function update(){
         const id                = $("#id").val();
         const name              = $("#name").val();
         const domain            = $("#domain").val();
@@ -181,39 +210,5 @@
                 $(".alert-warning").html(er.responseText);
             }
         })
-    }
-
-    $("#btn-save-add").click(function(){
-        
-        const name              = $("#name").val();
-        const domain            = $("#domain").val();
-        const newsletter        = $("#aseet_namespace").val();
-        const service           = $("#sel-service option:selected").val();
-
-        $.ajax({
-            url : '<?= $baseurl ?>src/brand-api.php',
-            method : "POST",
-            data : {
-                do:"save-add", 
-                name : name,
-                domain : domain,
-                newsletter : newsletter,
-                service : service
-            }, success : function(res){
-                if (res.code == "200"){
-                    $("#modal-add").modal("hide");
-                    $(".alert-success").fadeIn();
-                    $(".alert-success").html(res.message);
-                    load();
-                }
-            }, error : function(er){
-                $(".alert-warning").fadeIn();
-                $(".alert-warning").html(er.responseText);
-            }
-        })
-    });
-
-    function formWarna(warna){
-        return '<div class="rounded-circle" style="width:20px;height:20px;background-color:'+warna+'"></div>'
     }
 </script>
