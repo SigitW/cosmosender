@@ -36,7 +36,7 @@
             </div>
             <div class="modal-body">
 
-                <div class="alert alert-warning display-none mb-3"></div>
+                <div class="alert alert-warning display-none mb-3 over-x"></div>
                 <input type="hidden" name="" id="id"/>
                 <label for="" class="mb-1"> Host</label>
                 <input type="text" name="" id="host" class="form-control mb-3"> 
@@ -46,7 +46,7 @@
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success" id="btn-save-add"><i class="bi bi-check-lg"></i> Save</button>
+                <button type="button" class="btn btn-sm btn-success" id="btn-save"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </div>
     </div>
@@ -64,7 +64,6 @@
             method : "POST",
             data : {do:"load"},
             success:function(res){
-                console.log(res);
                 if (res.data.length > 0){
                     let str = '';
                     $.each(res.data, function(i, item){
@@ -111,11 +110,9 @@
         $("#modal-add").modal("show");
         $(".alert-warning").hide();
         $("#modal-label").html("Add Host");
-
-        $("#name").val("");
-        $("#domain").val("");
-        $("#aseet_namespace").val("");
-        $("#sel-service").val("");
+        $("#host").val("");
+        $("#sel-server").val("");
+        $("#btn-save").attr("onclick", "saveAdd()");
 
         loadServer();
     });
@@ -123,44 +120,43 @@
     function showEdit(id){
         $("#modal-add").modal("show");
         $(".alert-warning").hide();
+        $("#host").val("");
+        $("#server").val("");
+        $("#btn-save").attr("onclick", "saveEdit()");
         $("#modal-label").html("Edit Host");
         loadServer();
 
         $.ajax({
             url : '<?= $baseurl ?>src/host-api.php',
             method : "POST",
-            data : {do:"load-by-id", brand_id : id},
+            data : {do:"load-by-id", host_id : id},
             success:function(res){
                 if (res.data.length > 0){
                     const item = res.data[0];
                     $("#id").val(item.id);
                     $("#host").val(item.host);
-                    $("#sel-service").val(item.server_id);
+                    $("#sel-server").val(item.server_id);
                 }
-            }, error:function(err){
+            }, error:function(er){
                 $(".alert-warning").fadeIn();
-                $(".alert-warning").html(er.responseText);
+                $(".alert-warning").html(er.responseJSON == undefined ? er.responseText : er.responseJSON.message);
             }
         })
     }
 
     function saveEdit(){
-        const id                = $("#id").val();
-        const name              = $("#name").val();
-        const domain            = $("#domain").val();
-        const newsletter        = $("#aseet_namespace").val();
-        const service           = $("#sel-service option:selected").val();
+        const id        = $("#id").val();
+        const host      = $("#host").val();
+        const server    = $("#sel-server option:selected").val();
 
         $.ajax({
-            url : '<?= $baseurl ?>src/brand-api.php',
+            url : '<?= $baseurl ?>src/host-api.php',
             method : "POST",
             data : {
                 do:"save-edit", 
-                id : id,
-                name : name,
-                domain : domain,
-                newsletter : newsletter,
-                service : service
+                host_id : id,
+                host : host,
+                server_id : server,
             }, success : function(res){
                 if (res.code == "200"){
                     $("#modal-add").modal("hide");
@@ -170,13 +166,12 @@
                 }
             }, error : function(er){
                 $(".alert-warning").fadeIn();
-                $(".alert-warning").html(er.responseText);
+                $(".alert-warning").html(er.responseJSON == undefined ? er.responseText : er.responseJSON.message);
             }
         })
     }
 
-    $("#btn-save-add").click(function(){
-        
+    function saveAdd(){
         const host              = $("#host").val();
         const server            = $("#sel-server option:selected").val();
 
@@ -199,7 +194,7 @@
                 $(".alert-warning").html(er.responseText);
             }
         })
-    });
+    }
 
     function formWarna(warna){
         return '<div class="rounded-circle" style="width:20px;height:20px;background-color:'+warna+'"></div>'

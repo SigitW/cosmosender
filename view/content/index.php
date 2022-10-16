@@ -60,7 +60,7 @@ if ($isId)
                         str += '<tr>'+
                             '<td>'+num+'</td>'+
                             '<td>'+ replaceNull(item.materi_name)+'</td>'+
-                            '<td>'+replaceNull(item.subject)+'</td>'+
+                            '<td>'+ replaceNull(item.subject)+'</td>'+
                             '<td>'+item.date_namespace+'</td>'+
                             '<td>'+item.time_namespace+'</td>'+
                             '<td align="center"><span class="btn-edit"><i class="bi bi-pencil-square"></i> Edit</span></td>'+

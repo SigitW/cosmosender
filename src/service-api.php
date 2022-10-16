@@ -15,6 +15,9 @@ switch ($do) {
     case 'save-add':
         saveAdd();
         break;
+    case 'update':
+        update();
+        break;    
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -23,11 +26,16 @@ switch ($do) {
 
 // function here
 function load(){
+
+    $id = !isset($_POST['id']) ? "" : $_POST['id'];
     $model      = new TransModel;
     $data       = [];
+    $where      = "";
+    if ($id != "")
+        $where = "WHERE id = '".$id."'";
 
     try {
-        $data = $model->select("m_service");
+        $data = $model->select("m_service", [], $where);
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
@@ -55,7 +63,7 @@ function loadServer(){
 }
 
 function saveAdd(){
-
+    $model  = new TransModel;
     $data = [
         "service" => $_POST['service'],
         "server_id" => $_POST['server'],
@@ -63,12 +71,27 @@ function saveAdd(){
         "flag" => "Y"
     ];
 
-    $model  = new TransModel;
     try {
         $model->store("m_service", $data, "Admin");
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
     hasSuccess("Berhasil Menyimpan Service ");
+}
+
+function update(){
+    $model  = new TransModel;
+    $where  = ["id"=>$_POST['service_id']];
+    $data   = [
+        "service" => $_POST['service'],
+        "server_id" => $_POST['server_id'],
+        "color" => $_POST['color']
+    ];
+    try {
+        $model->update("m_service", $data, $where, "Admin");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+    hasSuccess("Berhasil Update Service ".$data['service']);
 }
 ?>
