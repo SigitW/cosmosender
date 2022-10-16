@@ -12,6 +12,12 @@ switch ($do) {
     case 'save-add':
         saveAdd();
         break;
+    case 'load-by-id':
+        edit();
+        break;
+    case 'save-edit':
+        update();
+        break;    
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -72,5 +78,31 @@ function saveAdd(){
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
     hasSuccess("Berhasil Menyimpan Host ". $data['host']);
+}
+
+function edit(){
+    $model = new TransModel;
+    $where = "WHERE id = '".$_POST['host_id']."'";
+    try {
+        $data = $model->select("m_email_host", [], $where);
+        hasSuccess("", $data);
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+}
+
+function update(){
+    $model = new TransModel;
+    $where = ["id" => $_POST['host_id']];
+    $data  = [
+        "host" => $_POST['host'],
+        "server_id" => $_POST['server_id']
+    ];
+    try {
+        $model->update("m_email_host", $data, $where, "admin");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+    hasSuccess("Berhasil update data ".$data['host']);
 }
 ?>

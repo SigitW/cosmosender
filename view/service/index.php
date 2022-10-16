@@ -32,24 +32,22 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Service</h1>
+                <h1 class="modal-title fs-5" id="modal-label">Add Service</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
 
                 <div class="alert alert-warning display-none mb-3"></div>
-
+                <input type="hidden" name="" id="id"/>
                 <label for="" class="mb-1"> Service</label>
                 <input type="text" name="" id="service" class="form-control mb-3"> 
                 <label for="" class="mb-1"> Server</label>
-                <select name="" id="sel-server" class="form-control mb-3">
-
-                </select>
+                <select name="" id="sel-server" class="form-control mb-3"></select>
                 <label for="" class="mb-1"> Warna Penanda</label>
                 <input type="color" name="" id="color" class="ms-3 mb-3"> 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success" id="btn-save-add"><i class="bi bi-check-lg"></i> Save</button>
+                <button type="button" class="btn btn-sm btn-success" id="btn-save"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </div>
     </div>
@@ -79,7 +77,7 @@
                             '<td align="center" style="vertical-align:middle">'+formWarna(item.color)+'</td>'+
                             '<td>'+item.created_at+'</td>'+
                             '<td>'+item.created_who+'</td>'+
-                            '<td><span class="btn-edit"><i class="bi bi-pencil-square"></i> Edit</span></td>'+
+                            '<td><span class="btn-edit" onclick="showEdit(\''+item.id+'\')"><i class="bi bi-pencil-square"></i> Edit</span></td>'+
                             '</tr>';
                     });
                     $("#table-body").html(str); 
@@ -93,9 +91,75 @@
 
     $("#btn-add").click(function(){
         $("#modal-add").modal("show");
+        $("#modal-label").html("Add Service");
+        $("#service").val("");
+        $("#sel-server").val("");
+        $("#color").val("");
         $(".alert-warning").hide();
+        $("#btn-save").attr("onclick", "store()");
         loadServer();
     });
+
+    function showEdit(id){
+        $("#modal-add").modal("show");
+        $("#modal-label").html("Edit Service");
+        $("#service").val("");
+        $("#sel-server").val();
+        $("#color").val("");
+        $(".alert-warning").hide();
+        $("#btn-save").attr("onclick", "update()");
+        loadServer();
+
+        $.ajax({
+            url : '<?= $baseurl ?>src/service-api.php',
+            method : "POST",
+            data : {do:"load", id:id},
+            success:function(res){
+                if (res.data.length > 0){
+                    const item = res.data[0];
+                    $("#id").val(item.id);
+                    $("#service").val(item.service);
+                    $("#sel-server").val(item.server_id);
+                    $("#color").val(item.color);
+                }
+            },error:function(er){
+                $(".alert-warning").fadeIn();
+                $(".alert-warning").html(er.responseJSON.message);
+            }
+        })
+    }
+
+    function update(){
+        const id        = $("#id").val();
+        const server    = $("#sel-server option:selected").val();
+        const service   = $("#service").val(); 
+        const color     = $("#color").val();
+        $.ajax({
+            url: '<?= $baseurl ?>src/service-api.php',
+            method : "POST",
+            data : {
+                do:"update", 
+                service_id:id,
+                service : service,
+                server_id : server,
+                color : color
+            },
+            success:function(res){
+                if (res.code == "200"){
+                    $("#modal-add").modal("hide");
+                    $(".alert-success").fadeIn();
+                    $(".alert-success").html(res.message);
+                    load();
+                } else {
+                    $(".alert-warning").fadeIn();
+                    $(".alert-warning").html(res.message);
+                }
+            },error:function(er){
+                $(".alert-warning").fadeIn();
+                $(".alert-warning").html(er.responseJSON == undefined ? er.responseText : er.responseJSON.message);
+            }
+        })
+    }
 
     function loadServer(){
         $.ajax({
@@ -117,8 +181,7 @@
         })
     }
 
-    $("#btn-save-add").click(function(){
-        
+    function store(){
         const service   = $("#service").val();
         const server    = $("#sel-server option:selected").val();
         const color     = $("#color").val();
@@ -146,7 +209,7 @@
                 $(".alert-warning").html(er.responseJSON.message);
             }
         })
-    });
+    }
 
     function formWarna(warna){
         return '<div class="rounded-circle" style="width:20px;height:20px;background-color:'+warna+'"></div>'

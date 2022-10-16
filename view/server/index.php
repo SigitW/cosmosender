@@ -91,7 +91,7 @@
 
     $("#btn-add").click(function(){
         $("#modal-add").modal("show");
-        $("modal-label").html("Add Server");
+        $("#modal-label").html("Add Server");
         $("#name").val("");
         $("#domain").val("");
         $("#color").val("");
@@ -101,13 +101,14 @@
 
     function showEdit(id){
         $("#modal-add").modal("show");
-        $("modal-label").html("Edit Server");
+        $("#modal-label").html("Edit Server");
+        $(".alert-warning").hide();
         $("#btn-save").attr("onclick", "update()");
         
         $.ajax({
             url : '<?= $baseurl ?>src/server-api.php',
             method : "POST",
-            data : {do:"edit"},
+            data : {do:"edit", server_id:id},
             success:function(res){
                 if (res.code == "200"){
                     if(res.data.length > 0){
@@ -154,7 +155,31 @@
                 }
             }, error : function(er){
                 $(".alert-warning").fadeIn();
-                $(".alert-warning").html(er.responseJSON.message);
+                $(".alert-warning").html(er.responseJSON == undefined ? er.responseText : er.responseJSON.message);
+            }
+        })
+    }
+
+    function update(){
+        $.ajax({
+            url:'<?= $baseurl; ?>src/server-api.php',
+            method:"POST",
+            data:{
+                do:"update",
+                server_id : $("#id").val(),
+                name : $("#name").val(),
+                domain: $("#domain").val(),
+                color:$("#color").val()
+            }, success:function(res){
+                if (res.code == "200"){
+                    $("#modal-add").modal("hide");
+                    $(".alert-success").fadeIn();
+                    $(".alert-success").html(res.message);
+                    load();
+                }
+            }, error:function(er){
+                $(".alert-warning").fadeIn();
+                $(".alert-warning").html(er.responseJSON == undefined ? er.responseText : er.responseJSON.message);
             }
         })
     }
