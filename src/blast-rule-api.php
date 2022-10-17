@@ -24,6 +24,18 @@ switch ($do) {
     case 'store-recipient':
         storeRecipient();
         break;        
+    case 'load-rule-by-id':
+        loadRuleById();
+        break;     
+    case 'non-active-detail':
+        nonActiveSender();
+        break;
+    case 'non-active-recipient':
+        nonActiveRecipient();
+        break;     
+    case 'update-rule':
+        updateRule();
+        break;            
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -311,16 +323,47 @@ function loadRuleById(){
 }
 
 function updateRule(){
-    $model = new TransModel;
+    $model   = new TransModel;
     $oriHost = $_POST['ori_host_id'];
     $newHost = $_POST['new_host_id'];
     $ruleId  = $_POST['rule_id'];
+    $name    = $_POST['name'];
 
-    if ($oriHost != $newHost){
-        $whereDetail = "
-            WHERE rule_id = '".$ruleId."'
-        ";
-        $details = $model->select("", ["email"], "WHERE rule_id = '".$ruleId."' AND ");
+    // jika host diganti
+    if ($oriHost != $newHost)
+    {
+        // lakukan pengecekan daftar email yang sebelumnya
+        // jika ada maka throw error
+        $sqlJoin = "(
+                        SELECT 
+                        mbrd.rule_id , mbrd.relay_id , mer.host_id, mer.email
+                        FROM m_blast_rule_detail mbrd 
+                        INNER JOIN m_email_relay mer ON mer.id = mbrd.relay_id 
+                    ) a";
+
+        $whereDetail = "WHERE a.rule_id = '".$ruleId."' AND a.host_id = '".$oriHost."'";
+
+        try {
+            $details = $model->select($sqlJoin, [],  $whereDetail);
+            if (count($details) > 0) // jika masih terdapat data email dari host sebelumnya maka throw
+                hasInternalError("Terdapat sender dari host lain / host sebelumnya, hapus daftar email tersebut dahulu !");
+        } catch (\Throwable $th) {
+            hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+        }
+    }
+
+    // jika ridak ada / email host masih sama dengan sebelumnya
+    // lakukan update
+    $data = [
+        "name" => $name,
+        "host_id" => $newHost
+    ];
+    $where = ["id"=>$ruleId];
+    try {
+        $model->update("m_blast_rule", $data, $where, "Admin");
+        hasSuccess("Berhasil Update Rules");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
 }
 
