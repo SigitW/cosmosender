@@ -339,9 +339,10 @@ function updateRule(){
                         mbrd.rule_id , mbrd.relay_id , mer.host_id, mer.email
                         FROM m_blast_rule_detail mbrd 
                         INNER JOIN m_email_relay mer ON mer.id = mbrd.relay_id 
+                        WHERE mbrd.flag = 'Y'
                     ) a";
 
-        $whereDetail = "WHERE a.rule_id = '".$ruleId."' AND a.host_id = '".$oriHost."'";
+        $whereDetail = "WHERE a.rule_id = '".$ruleId."' AND a.host_id = '".$oriHost."' LIMIT 1";
 
         try {
             $details = $model->select($sqlJoin, [],  $whereDetail);
@@ -352,7 +353,7 @@ function updateRule(){
         }
     }
 
-    // jika ridak ada / email host masih sama dengan sebelumnya
+    // jika tidak ada / email host masih sama dengan sebelumnya
     // lakukan update
     $data = [
         "name" => $name,
@@ -361,7 +362,7 @@ function updateRule(){
     $where = ["id"=>$ruleId];
     try {
         $model->update("m_blast_rule", $data, $where, "Admin");
-        hasSuccess("Berhasil Update Rules");
+        hasSuccess("Berhasil Update Rule ");
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }

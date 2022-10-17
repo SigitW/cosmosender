@@ -41,14 +41,13 @@
             </div>
             <div class="modal-body">
 
-                <div class="alert alert-warning display-none mb-3"></div>
+                <div class="alert alert-warning warning-rule display-none mb-3"></div>
                 <input type="hidden" name="" id="id"/>
+                <input type="hidden" name="" id="ori-host"/>
                 <label for="" class="mb-1"> Rules Name</label>
                 <input type="text" name="" id="name" class="form-control mb-3"> 
                 <label for="" class="mb-1"> SMTP Server</label>
-                <select name="" id="sel-host" class="form-control">
-
-                </select>
+                <select name="" id="sel-host" class="form-control"></select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-success" id="btn-save" onclick="storeRule()"><i class="bi bi-check-lg"></i> Save</button>
@@ -61,7 +60,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modal-label">Add Blast Config</h1>
+                <h1 class="modal-title fs-5">Add Blast Config</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -73,7 +72,7 @@
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success" id="btn-save" onclick="storeRuleBlast()"><i class="bi bi-check-lg"></i> Save</button>
+                <button type="button" class="btn btn-sm btn-success" id="btn-save-add-blast" onclick="storeRuleBlast()"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </div>
     </div>
@@ -83,7 +82,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modal-label">Add Email Relay</h1>
+                <h1 class="modal-title fs-5">Add Email Relay</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -104,7 +103,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modal-label">Add Recipient</h1>
+                <h1 class="modal-title fs-5">Add Recipient</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -182,7 +181,7 @@
                 str += '<h4 class="mt-3">'+item.name+'</h4>'+
                     '<div class="badge" style="background-color:'+bgcolor+'">'+item.server_name+'</div>'+
                     '<div class="text-end mb-2">'+
-                        '<button class="btn btn-sm btn-light me-1"><i class="bi bi-pencil-square"></i> Edit Rules</button>'+
+                        '<button class="btn btn-sm btn-light me-1" onclick="showEditRule(\''+item.id+'\')"><i class="bi bi-pencil-square"></i> Edit Rules</button>'+
                         '<button class="btn btn-sm btn-light" '+btnAdd+'><i class="bi bi-plus-lg"></i> Add Sender</button>'+
                     '</div>'+
                     '<div class="over-x mb-3">'+
@@ -190,7 +189,6 @@
                     '</div>';
             } else {
 
-                // console.log(item.recipients);
                 const stRecipient = buildRecipient(item.recipients);
 
                 str += '<h4 class="mt-3">'+item.name+'</h4>'+
@@ -198,7 +196,7 @@
                     '<div class="row">'+
                         '<div class="col-md-6 col-xs-12">'+
                             '<div class="text-end mb-2">'+
-                                '<button class="btn btn-sm btn-light me-1"><i class="bi bi-pencil-square"></i> Edit Rules</button>'+
+                                '<button class="btn btn-sm btn-light me-1" onclick="showEditRule(\''+item.id+'\')"><i class="bi bi-pencil-square"></i> Edit Rules</button>'+
                                 '<button class="btn btn-sm btn-light" '+btnAdd+'><i class="bi bi-plus-lg"></i> Add Sender</button>'+
                             '</div>'+
                             '<div class="over-x mb-3">'+ 
@@ -233,7 +231,7 @@
                         '<td>'+num+'</td>'+
                         '<td>'+item.email+'</td>'+
                         '<td>'+item.host_name+'</td>'+
-                        '<td class="text-center"><a href="" class="btn-menu"><i class="bi bi-x-lg red bold"></i></a></td>'+
+                        '<td class="text-center"><a href="#" onclick="nonActiveDetail(\''+item.id+'\',\''+item.email+'\')" class="btn-menu"><i class="bi bi-x-lg red bold"></i></a></td>'+
                     '</tr>';
         });
         str += '</tbody>'+
@@ -246,8 +244,6 @@
         if (list == undefined || list.length == 0)
             return "";
         
-        // console.log(list);
-
         let str = '<table class="table table-dark table-borderless table-striped table-hover">';
         str += '<tr><td colspan="4" class="bold">Recipient : </td></tr>';
         $.each(list, function(i, item){
@@ -256,7 +252,7 @@
                         '<td>'+num+'</td>'+
                         '<td>'+item.email+'</td>'+
                         '<td>'+item.name+'</td>'+
-                        '<td class="text-center"><a href="" class="btn-menu"><i class="bi bi-x-lg red bold"></i></a></td>'+
+                        '<td class="text-center"><a href="#" onclick="nonActiveRecipient(\''+item.id+'\',\''+item.email+'\')" class="btn-menu"><i class="bi bi-x-lg red bold"></i></a></td>'+
                     '</tr>';
         });
         str += '</tbody>'+
@@ -359,11 +355,13 @@
 
     function showAdd(){
         $("#modal-add").modal('show');
+        $("#modal-label").html('Add Rules / Send Test');
         $(".alert-warning").hide();
         $(".alert-warning").val("");
         loadHost();
         $("#name").val("");
         $("#sel-host").val("");
+        $("#btn-save").attr("onclick","storeRule()");
     }
 
     function showAddBlast(){
@@ -372,11 +370,6 @@
         $(".warning-blast-config").val("");
         loadHost();
         $("#sel-host-blast").val("");
-    }
-    
-
-    function showEdit(id){
-        location.href = "edit.php?id="+id;
     }
 
     function update(){
@@ -484,7 +477,106 @@
         });
     }
 
-    function formWarna(warna){
-        return '<div class="rounded-circle" style="width:20px;height:20px;background-color:'+warna+'"></div>'
+    function nonActiveDetail(id, name){
+        if (confirm("Apakah Akan Menghapus " +name+ " ?")){
+            $.ajax({
+                url : '<?= $baseurl ?>src/blast-rule-api.php',
+                method : "POST",
+                data : {
+                    do:"non-active-detail", 
+                    detail_id:id
+                }, success : function(res){
+                    if (res.code == "200"){
+                        $(".alert-success").fadeIn();
+                        $(".alert-success").html(res.message + name);
+                        load();
+                    }
+                }, error : function(er){
+                    $(".danger-search").fadeIn();
+                    $(".danger-search").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+                }
+            })
+        }
     }
+
+    function nonActiveRecipient(id, name){
+        if (confirm("Apakah Akan Menghapus " +name+ " ?")){
+            $.ajax({
+                url : '<?= $baseurl ?>src/blast-rule-api.php',
+                method : "POST",
+                data : {
+                    do:"non-active-recipient", 
+                    recipient_id:id
+                }, success : function(res){
+                    if (res.code == "200"){
+                        $(".alert-success").fadeIn();
+                        $(".alert-success").html(res.message + name);
+                        load();
+                    }
+                }, error : function(er){
+                    $(".danger-search").fadeIn();
+                    $(".danger-search").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+                }
+            })
+        }
+    }
+
+    function showEditRule(id){
+        $("#modal-add").modal("show");
+        $(".warning-rule").hide();
+        $(".warning-rule").html("");
+        $("#modal-label").html("Edit Rule / Send Test");
+        $("#btn-save").attr("onclick","saveEditRule()");
+
+        loadHost();
+        $.ajax({
+            url : '<?= $baseurl ?>src/blast-rule-api.php',
+            method : "POST",
+            data : {
+                do:"load-rule-by-id", 
+                rule_id:id
+            }, success : function(res){
+                if (res.code == "200"){
+                    const item = res.data[0];
+                    $("#id").val(item.id);
+                    $("#name").val(item.name);
+                    $("#sel-host").val(item.host_id);
+                    $("#ori-host").val(item.host_id);
+                }
+            }, error : function(er){
+                $(".warning-rule").fadeIn();
+                $(".warning-rule").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+            }
+        })
+    }
+
+    function saveEditRule(){
+        const id      = $("#id").val();
+        const name    = $("#name").val();
+        const oriHost = $("#ori-host").val();
+        const newHost = $("#sel-host option:selected").val();
+
+        $.ajax({
+            url : '<?= $baseurl ?>src/blast-rule-api.php',
+            method : "POST",
+            data : {
+                do:"update-rule", 
+                rule_id: id,
+                name : name,
+                ori_host_id : oriHost,
+                new_host_id : newHost
+            }, success : function(res){
+                if (res.code == "200"){
+                    $("#modal-add").modal("hide");
+                    $(".alert-success").fadeIn();
+                    $(".alert-success").html(res.message + name);
+                    load();    
+                }
+            }, error : function(er){
+                $(".warning-rule").fadeIn();
+                $(".warning-rule").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+            }
+        })
+    }
+
 </script>
