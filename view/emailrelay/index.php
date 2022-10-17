@@ -130,6 +130,12 @@
         $("#modal-add").modal("show");
         $(".alert-warning").hide();
         $("#modal-label").html("Edit Email Relay");
+
+        $("#email").val("");
+        $("#password").val("");
+        $("#port").val("");
+        $("#sel-host").val("");
+
         loadHost();
         $("#btn-save").attr("onclick", "update()");
 

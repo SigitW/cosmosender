@@ -19,7 +19,11 @@ switch ($do) {
         storeRelay();
         break;
     case 'load-relay-by-host':
-        loadRelayByHostId();    
+        loadRelayByHostId();
+        break;
+    case 'store-recipient':
+        storeRecipient();
+        break;        
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -51,7 +55,7 @@ function load(){
 }
 
 
-function loadServiceById($id = ""){
+function loadServiceById($id = "") : array {
     $model      = new TransModel;
     $data       = [];
     $joinSQL    = "(SELECT ms.id as service_id, ms.service, ms2.name as server_name, ms.color
@@ -66,7 +70,7 @@ function loadServiceById($id = ""){
     return $data;
 }
 
-function loadServerById($id){
+function loadServerById($id) : array {
     $model  = new TransModel;
     $data   = [];
     try {
@@ -77,7 +81,7 @@ function loadServerById($id){
     return $data;
 }
 
-function getDataServerByBrandId($id){
+function getDataServerByBrandId($id) : array {
     $model  = new TransModel;
     $data   = [];
     $buildTableJoin = '(SELECT a.brand_id, a.host_id, c.id as server_id, b.host, c.name as server_name, c.color FROM m_blast_rule a
@@ -93,10 +97,10 @@ function getDataServerByBrandId($id){
     return $data;
 }
 
-function loadBlastRuleByBrandId($id){
+function loadBlastRuleByBrandId($id) : array {
     $model  = new TransModel;
     $select = ["id", "name", "host_id", "type"];
-    $where  = "WHERE brand_id = '".$id."' ORDER BY type DESC";
+    $where  = "WHERE brand_id = '".$id."' AND flag = 'Y' ORDER BY type DESC";
     $data   = [];
     try {
         $data = $model->select("m_blast_rule", $select, $where);
@@ -109,8 +113,17 @@ function loadBlastRuleByBrandId($id){
 
     foreach ($data as $i => $p) {
         $host = loadHostById($p['host_id']);
-        $data[$i]['color']   = count($host) == 0 ? "" : $host['color']; 
-        $data[$i]['details'] = loadBlastRuleRelayByRuleId($p['id']);
+        
+        $data[$i]['color'] = "";
+        $data[$i]['server_name'] = "-";
+
+        if (count($host) > 0){
+            $data[$i]['color'] = $host['color']; 
+            $data[$i]['server_name'] = $host['server_name'];
+        }
+
+        $data[$i]['details']    = loadBlastRuleRelayByRuleId($p['id']);
+        $data[$i]['recipients'] = loadRecipientByRuleId($p['id']);
     }
 
     return $data;
@@ -129,20 +142,21 @@ function loadHostById($id) : array {
     $data       = $datas[0];
     $servers    = [];
     try {
-        $servers = $model->select("m_server", ["color"], "WHERE id='".$data['server_id']."'");
+        $servers = $model->select("m_server", ["color", "name"], "WHERE id='".$data['server_id']."'");
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
 
-    $server         = $servers[0];
-    $data['color']  = $server['color'];
+    $server                 = $servers[0];
+    $data['color']          = $server['color'];
+    $data['server_name']    = $server['name'];
     return $data;
 }
 
-function loadBlastRuleRelayByRuleId($id){
+function loadBlastRuleRelayByRuleId($id) : array {
     $model  = new TransModel;
     $select = ["id", "relay_id"];
-    $where  = "WHERE rule_id = '".$id."'";
+    $where  = "WHERE rule_id = '".$id."' AND flag='Y'";
     $data   = [];
     try {
         $data = $model->select("m_blast_rule_detail", $select, $where);
@@ -163,7 +177,7 @@ function loadBlastRuleRelayByRuleId($id){
     return $data;
 }
 
-function loadRelayByDetailId($id){
+function loadRelayByDetailId($id) : array {
     $model  = new TransModel;
     $select = ["id", "email", "host_id"];
     $where  = "WHERE id = '".$id."'";
@@ -234,7 +248,81 @@ function loadRelayByHostId(){
     hasSuccess("", $data);
 }
 
+function storeRecipient(){
+    $model  = new TransModel;
+    $data   = [
+        "rule_id" => $_POST['rule_id'],
+        "email" => $_POST['email'],
+        "name" => $_POST['name'],
+        "flag" => "Y"
+    ];
+    try {
+        $model->store("m_blast_rule_recipient", $data, "Admin");
+        hasSuccess("Berhasil Menambahkan Recipient ".$data['email']);
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+}
 
+function loadRecipientByRuleId($id){
+    $model = new TransModel;
+    $where = "WHERE rule_id = '".$id."' AND flag = 'Y'";
+    try {
+        $data = $model->select("m_blast_rule_recipient", [], $where);
+        return $data;
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+}
+
+function nonActiveSender(){
+    $model = new TransModel;
+    $where = ["id"=>$_POST['detail_id']];
+    $data  = ["flag"=>"N"];
+    try {
+        $model->update("m_blast_rule_detail", $data, $where, "Admin");
+        hasSuccess("Berhasil Men-Nonaktifkan Sender ");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+}
+
+function nonActiveRecipient(){
+    $model = new TransModel;
+    $where = ["id"=>$_POST['recipient_id']];
+    $data  = ["flag"=>"N"];
+    try {
+        $model->update("m_blast_rule_recipient", $data, $where, "Admin");
+        hasSuccess("Berhasil Men-Nonaktifkan Recipient");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+}
+
+function loadRuleById(){
+    $model = new TransModel;
+    $where = "WHERE id = '".$_POST['rule_id']."'";
+    try {
+        $data = $model->select("m_blast_rule", [], $where);
+        hasSuccess("", $data);
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+}
+
+function updateRule(){
+    $model = new TransModel;
+    $oriHost = $_POST['ori_host_id'];
+    $newHost = $_POST['new_host_id'];
+    $ruleId  = $_POST['rule_id'];
+
+    if ($oriHost != $newHost){
+        $whereDetail = "
+            WHERE rule_id = '".$ruleId."'
+        ";
+        $details = $model->select("", ["email"], "WHERE rule_id = '".$ruleId."' AND ");
+    }
+}
 
 
 ?>

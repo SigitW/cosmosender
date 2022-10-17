@@ -100,6 +100,28 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-add-recipient" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-add" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modal-label">Add Recipient</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning warning-recipient display-none mb-3"></div>
+                <input type="hidden" name="" id="recipient-rule-id"/>
+                <label for="" class="mb-1"> Email</label>
+                <input type="text" class="form-control mb-3" name="" id="recipient-email"/>
+                <label for="" class="mb-1"> Name</label>
+                <input type="text" class="form-control mb-3" name="" id="recipient-name"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-success" id="btn-save-recipient" onclick="storeRecipient()"><i class="bi bi-check-lg"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include '../../footer.php' ?>
 <script>
 
@@ -146,30 +168,56 @@
         let str = '';    
         $.each(list, function(i, item){
 
-            if (item.details.length > 0)
-                console.log("ada details");
+            // if (item.details.length > 0)
+            //     console.log("ada details");
 
-            const stDetails = buildDetail(item.details);                
-            const btnAdd    = 'onclick="showAddRelay(\''+item.id+'\', \''+item.host_id+'\')"';
+            const stDetails             = buildDetail(item.details);                
+            const btnAdd                = 'onclick="showAddRelay(\''+item.id+'\', \''+item.host_id+'\')"';
+            const btnAddRecipient       = 'onclick="showAddRecipient(\''+item.id+'\')"';
+            const bgcolor               = item.color;
 
-            str += '<h4 class="mt-3">'+item.name+' : </h4>'+
+            str += '<div class="mt-3 card-rules">';
+            if (item.type == "blast"){
+                
+                str += '<h4 class="mt-3">'+item.name+'</h4>'+
+                    '<div class="badge" style="background-color:'+bgcolor+'">'+item.server_name+'</div>'+
                     '<div class="text-end mb-2">'+
-                        '<button class="btn btn-sm btn-light me-1"><i class="bi bi-pencil-square"></i> Edit Rules Name</button>'+
-                        '<button class="btn btn-sm btn-light" '+btnAdd+'><i class="bi bi-plus-lg"></i> Add Relay</button>'+
+                        '<button class="btn btn-sm btn-light me-1"><i class="bi bi-pencil-square"></i> Edit Rules</button>'+
+                        '<button class="btn btn-sm btn-light" '+btnAdd+'><i class="bi bi-plus-lg"></i> Add Sender</button>'+
                     '</div>'+
                     '<div class="over-x mb-3">'+
-                        '<table class="table table-dark table-borderless table-striped table-hover">'+
-                            '<tbody>'+ stDetails +
-                                // '<tr>'+
-                                //     '<td>1</td>'+
-                                //     '<td>noreplay@gmail.com</td>'+
-                                //     '<td>mail.indraco.com</td>'+
-                                //     '<td class="text-center"><a href="" class="btn-menu"><i class="bi bi-x-lg red bold"></i></a></td>'+
-                                // '</tr>'+
-                            '</tbody>'+
-                        '</table>'+
-                    '</div><hr/>';
+                        stDetails +
+                    '</div>';
+            } else {
+
+                // console.log(item.recipients);
+                const stRecipient = buildRecipient(item.recipients);
+
+                str += '<h4 class="mt-3">'+item.name+'</h4>'+
+                    '<div class="badge" style="background-color:'+bgcolor+'">'+item.server_name+'</div>'+
+                    '<div class="row">'+
+                        '<div class="col-md-6 col-xs-12">'+
+                            '<div class="text-end mb-2">'+
+                                '<button class="btn btn-sm btn-light me-1"><i class="bi bi-pencil-square"></i> Edit Rules</button>'+
+                                '<button class="btn btn-sm btn-light" '+btnAdd+'><i class="bi bi-plus-lg"></i> Add Sender</button>'+
+                            '</div>'+
+                            '<div class="over-x mb-3">'+ 
+                                stDetails +
+                            '</div>'+
+                        '</div>'+
+                        '<div class="col-md-6 col-xs-12">'+ 
+                            '<div class="text-end mb-2">'+
+                                '<button class="btn btn-sm btn-light" '+btnAddRecipient+'><i class="bi bi-person-plus"></i> Add Recipient</button>'+
+                            '</div>'+
+                            '<div class="over-x mb-3">'+
+                                stRecipient +
+                            '</div>'+
+                        '</div>'+ 
+                    '</div>';
+            }
+            str += '</div>';
         }); 
+        
         $("#panel-rules").html(str);
     }
 
@@ -178,12 +226,36 @@
             return "";
         
         let str = '<table class="table table-dark table-borderless table-striped table-hover">';
+        str += '<tr><td colspan="4" class="bold">Sender : </td></tr>';
         $.each(list, function(i, item){
             const num = 1 + i;
             str += '<tr>'+
                         '<td>'+num+'</td>'+
                         '<td>'+item.email+'</td>'+
                         '<td>'+item.host_name+'</td>'+
+                        '<td class="text-center"><a href="" class="btn-menu"><i class="bi bi-x-lg red bold"></i></a></td>'+
+                    '</tr>';
+        });
+        str += '</tbody>'+
+            '</table>';
+            
+        return str;    
+    }
+
+    function buildRecipient(list){
+        if (list == undefined || list.length == 0)
+            return "";
+        
+        // console.log(list);
+
+        let str = '<table class="table table-dark table-borderless table-striped table-hover">';
+        str += '<tr><td colspan="4" class="bold">Recipient : </td></tr>';
+        $.each(list, function(i, item){
+            const num = 1 + i;
+            str += '<tr>'+
+                        '<td>'+num+'</td>'+
+                        '<td>'+item.email+'</td>'+
+                        '<td>'+item.name+'</td>'+
                         '<td class="text-center"><a href="" class="btn-menu"><i class="bi bi-x-lg red bold"></i></a></td>'+
                     '</tr>';
         });
@@ -200,6 +272,13 @@
         $("#host-id").val(hostId);
         $("#rule-id").val(ruleId);
         loadRelay(hostId, "sel-relay");
+    }
+
+    function showAddRecipient(ruleId){
+        $(".warning-recipient").html("");
+        $(".warning-recipient").hide();
+        $("#modal-add-recipient").modal('show');
+        $("#recipient-rule-id").val(ruleId);
     }
 
     function storeRelay(){
@@ -228,7 +307,33 @@
                 $(".warning-relay").html(er.responseText);
             }
         })
+    }
 
+    function storeRecipient(){
+        const ruleId    = $("#recipient-rule-id").val();
+        const name      = $("#recipient-name").val();
+        const email     = $("#recipient-email").val();
+
+        $.ajax({
+            url : '<?= $baseurl ?>src/blast-rule-api.php',
+            method : "POST",
+            data : {
+                do:"store-recipient",
+                rule_id:ruleId,
+                name:name,
+                email:email
+            }, success:function(res){
+                if (res.code == "200"){
+                    $("#modal-add-recipient").modal("hide");
+                    $(".alert-success").fadeIn();
+                    $(".alert-success").html(res.message);
+                    load();
+                }
+            }, error:function(er){
+                $(".warning-recipient").fadeIn();
+                $(".warning-recipient").html(er.responseJSON == undefined ? er.responseText : er.responseJSON.message);
+            }
+        })
     }
 
     function loadHost(){

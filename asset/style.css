@@ -156,3 +156,9 @@ select option {
     font-weight: bold;
 }
 
+.card-rules {
+    background-color: rgb(66, 66, 66);
+    padding: 10px;
+    border-left: solid 3px teal;
+}
+
