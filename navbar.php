@@ -39,7 +39,7 @@
     <a class="btn-item-menu mb-2" href="<?= $baseurl ?>view/emailrelay/">
         <i class="bi bi-sliders me-2"></i> Email Relay
     </a>
-    <a class="btn-item-menu mb-2">
+    <a class="btn-item-menu mb-2" href="<?= $baseurl ?>view/useremail/">
         <i class="bi bi-sliders me-2"></i> User Email
     </a>
     <hr>
