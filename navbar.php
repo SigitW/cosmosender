@@ -12,10 +12,16 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
+  
+    <div class="mt-3">Main Menu</div>
+    <hr>
     <a class="btn-item-menu mb-2" href="<?= $baseurl ?>">
         <i class="bi bi-menu-button-wide me-2"></i> Home
     </a>
-
+    <a class="btn-item-menu mb-2" href="<?= $baseurl ?>view/useremail/">
+        <i class="bi bi-sliders me-2"></i> User Email Sync
+    </a>
+    <br>
     <div class="mt-3">Transactional Setting</div>
     <hr>
     <a class="btn-item-menu mb-2" href="<?= $baseurl ?>view/brand/">
@@ -24,7 +30,7 @@
     <a class="btn-item-menu mb-2" href="<?= $baseurl ?>view/blastrule/">
         <i class="bi bi-sliders me-2"></i> Blast Rules
     </a>
-
+    <br>
     <div class="mt-3">Master Setting</div>
     <hr>
     <a class="btn-item-menu mb-2" href="<?= $baseurl ?>view/server/">
@@ -39,9 +45,7 @@
     <a class="btn-item-menu mb-2" href="<?= $baseurl ?>view/emailrelay/">
         <i class="bi bi-sliders me-2"></i> Email Relay
     </a>
-    <a class="btn-item-menu mb-2" href="<?= $baseurl ?>view/useremail/">
-        <i class="bi bi-sliders me-2"></i> User Email
-    </a>
+    <br>
     <hr>
     <a class="btn-item-menu mb-2" style="border-right: solid 2px red;">
         <i class="bi bi-box-arrow-left me-2" style="color:red"></i> Logout

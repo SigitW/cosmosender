@@ -18,6 +18,12 @@ switch ($do) {
     case 'sync-to-db':
         syncEmailToDb();
         break;        
+    case 'save-config':
+        saveConfig();
+        break;
+    case 'load-config':
+        loadConfig();
+        break;        
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -38,24 +44,21 @@ function loadByBrand(){
     $perPage = 10;
     if (count($data) > 0){
         foreach ($data as $i => $p) {
-            $data[$i]['num'] = $i + 1;
+            $num = $i + 1;
+            $data[$i]['num'] = $num;
 
             //menambahkan atribute page;
             $data[$i]['page'] = $page;
 
             // menghitung halaman
             $maxPage = $page * $perPage;
-            if ($maxPage == $i){
+            if ($maxPage == $num){
                 $page++;
             }
             // end
         }
     }
     hasSuccess("", $data, $page);
-}
-
-function update(){
-    
 }
 
 function loadBrand(){
@@ -84,17 +87,37 @@ function loadBrand(){
     }
 }
 
+function hilangkanPetik($str){
+    $res = "";
+    $arrStr = explode("'", $str);
+    if (count($arrStr) > 0){
+        $i = 0;
+        while ($i < count($arrStr)){
+            $res .= $arrStr[$i];
+            $i++;
+        }
+    }
+    return $res;
+}
 
 function syncEmailToDb(){
-    $model   = new TransModel;
-    $brandId = $_POST['brand_id'];
-    $strJson = $_POST['str_email'];
-    $decStr  = json_decode($strJson);
+    $model          = new TransModel;
+    $brandId        = $_POST['brand_id'];
+    $strJson        = $_POST['str_email'];
+    $emailColumn    = $_POST['email_column'];
+    $nameColumn     = $_POST['name_column'];
+    $decStr         = json_decode($strJson);
 
     // loop dan fetch master table email
     // membuat nomor batch
     $nobatch = $brandId . date("ymdhis");
     foreach($decStr as $i => $p){
+
+        // menghilangkan tanda petik
+        $nama = "";
+        if ($nameColumn != ""){
+           $nama = hilangkanPetik($p->$nameColumn);
+        }
         
         // get data table master email sync
         $getDataEmail   = $model->select("mt_customer_email", [], "WHERE email = '".$p->email."' AND brand_id = '".$brandId."'");
@@ -117,8 +140,8 @@ function syncEmailToDb(){
             // jika tidak ditemukan maka insert
             $insert = [
                 "brand_id" => $brandId,
-                "nama" => $p->nama,
-                "email" => $p->email,
+                "nama" => $nama,
+                "email" => $p->$emailColumn,
                 "no_batch" => $nobatch,
                 "flag" => "Y"
             ];
@@ -148,7 +171,85 @@ function syncEmailToDb(){
             }
         }
     }
+
+    // update last sync
+    $updateBrand = ["email_last_sync"=>date('Y-m-d h:i:s')];
+    $whereUpdate = ["id" => $brandId];
+    try {
+        $model->update("m_brand", $updateBrand, $whereUpdate, "Admin");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
     hasSuccess("Berhasil Sinkronisasi Email");
+}
+
+function saveConfig(){
+    $model = new TransModel;
+    
+    $brandId        = $_POST['brand_id'];
+    $tbname         = $_POST['tbname'];
+    $emailColumn    = $_POST['email_column'];
+    $nameColumn     = $_POST['name_column'];
+    $whereClause    = $_POST['where_clause'];
+    $whereValue     = $_POST['where_value'];
+
+    $getDataTable = null;
+    try {
+        $getDataTable = $model->select("m_email_sync_table", ["id"], "WHERE brand_id = '".$brandId."'");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+
+    $isFound = $getDataTable != null && isset($getDataTable);
+
+    if ($isFound){
+        // maka update
+        $updateTable = [
+            "table_name" => $tbname,
+            "where_clause" => $whereClause,
+            "email_column" => $emailColumn,
+            "name_column" => $nameColumn,
+            "where_value" => $whereValue
+        ];
+
+        try {
+            $model->update("m_email_sync_table", $updateTable, ["id" => $getDataTable[0]['id']], "Admin");
+        } catch (\Throwable $th) {
+            hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+        }
+
+        hasSuccess("Berhasil Men-Update Data Konfigurasi");
+
+    } else {
+        // maka insert
+        $insertTable = [
+            "brand_id" => $brandId,
+            "table_name" => $tbname,
+            "where_clause" => $whereClause,
+            "where_value" => $whereValue,
+            "email_column" => $emailColumn,
+            "name_column" => $nameColumn,
+            "flag" => "Y"
+        ];
+        try {
+            $model->store("m_email_sync_table", $insertTable, "Admin");
+        } catch (\Throwable $th) {
+            hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+        }
+
+        hasSuccess("Berhasil Menambahkan Data Konfigurasi");
+    }
+}
+
+function loadConfig(){
+    $model = new TransModel;
+    $brandId = $_POST['brand_id'];
+    try {
+        $data = $model->select("m_email_sync_table", [], "WHERE brand_id = '".$brandId."'");
+        hasSuccess("", $data);
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
 }
 
 ?>

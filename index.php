@@ -96,8 +96,8 @@
 
     function appendAction(id){
         return '<div class="card-brand-title display-none" id="panel-action-'+id+'" style="background-color: teal;font-size:20px;text-align:center;">'+
-                    '<div style="width:100%;text-align:right;"><div class="btn-edit" onclick="hideAction(\''+id+'\')"><i class="bi bi-x-lg"></i> Close</div></div>'+
-                    '<span class="me-3 btn-edit" onclick="toMenu(\'view/content/?id='+id+'\')"><i class="bi bi-menu-button-wide me-2"></i> Content Management</span> | '+
+                    '<div style="width:100%;text-align:right;"><div class="btn-edit" style="font-size:14px" onclick="hideAction(\''+id+'\')"><i class="bi bi-x-lg"></i> Close</div></div>'+
+                    '<span class="me-3 btn-edit" onclick="toMenu(\'view/content/?id='+id+'\')"><i class="bi bi-menu-button-wide me-2"></i> Content Management</span> <div class="vr"></div>'+
                     '<span class="ms-3 btn-edit"><i class="bi bi-send-fill me-2"></i> Begin Blast</span>'+
                 '</div>';
     }
