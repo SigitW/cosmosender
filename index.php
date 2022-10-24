@@ -2,7 +2,6 @@
 <?php include 'navbar.php' ?>
 <body class="container">
     <div id="panel-card-brand"></div> 
-    
 </body>
 <?php include 'footer.php' ?>
 <script>
