@@ -124,6 +124,25 @@ function loadBrandById() {
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
-    hasSuccess("",$data);
+
+    $sqlServices = "(SELECT 
+                    ms2.domain as server, ms.service, ms.id
+                    FROM m_service ms 
+                    INNER JOIN m_server ms2 ON ms2.id = ms.server_id) a";
+
+    foreach ($data as $i => $p) {
+        $serviceName = "";
+        $services = $model->select($sqlServices, [], "WHERE a.id = '".$p['service_id']."'");
+        if (isset($services)){
+            $serviceName = $services[0]['server'] . $services[0]['service'];
+        }
+
+        // build service path
+        $data[$i]['service_path'] = $serviceName;
+        $data[$i]['upload_path']  = $p['actual_path'] . $p['domain'] . "/" . $p['aseet_namespace'] . "/"; 
+        $data[$i]['content_path'] = $p['content_domain'] . $p['domain'] . "/" . $p['aseet_namespace'] . "/"; 
+    }
+
+    hasSuccess("", $data);
 }
 ?>

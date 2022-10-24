@@ -127,7 +127,7 @@
                     $.each(res.data, function(i, item){
                         const num = 1 + i;
 
-                        const urlpath = "http://" + item.actual_path + item.server_domain + item.service;
+                        const urlpath = "http://" + item.server_domain + item.service;
 
                         str += '<tr>'+
                             '<td>'+num+'</td>'+

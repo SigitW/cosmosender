@@ -11,7 +11,10 @@ switch ($do) {
         break;
     case 'load-content-by-id':
         loadContentById();
-        break;    
+        break;   
+    case 'update-content':
+        updateContent(); 
+        break;          
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -48,7 +51,8 @@ function loadContentById(){
                     tc.date_namespace,
                     tc.time_namespace,
                     ta.name,
-                    mb.actual_path
+                    mb.actual_path,
+                    mb.content_domain
                     FROM t_asset ta INNER JOIN
                     t_content tc ON tc.id = ta.content_id INNER JOIN
                     m_brand mb ON mb.id = tc.brand_id  
@@ -75,7 +79,7 @@ function loadContentById(){
         $availasset = $dataasset != "" && count($dataasset);
         if ($availasset){
             foreach ($dataasset as $i => $asset) {
-                $arrayimg[$i] = $asset['actual_path'] . $asset['domain'] . "/" . 
+                $arrayimg[$i] = $asset['content_domain'] . $asset['domain'] . "/" . 
                 $asset['aseet_namespace'] . "/" . $asset['date_namespace'] . "/" . 
                 $asset['time_namespace'] . "/" . 'img' . "/". $asset['name'];
             }
@@ -119,4 +123,80 @@ function getContentBodyById($id){
         }
     }
     return $res;
+}
+
+function updateContent(){
+
+    $id         = $_POST['content_id'];
+    $content    = $_POST['content'];
+
+    include 'local-config.php';
+    try {
+        $sql    = "UPDATE t_content SET body_content = '".$content."' WHERE id = '".$id."' ";
+        $action = $conn->query($sql);
+        if ($action !== TRUE) {
+            hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
+        } 
+        hasSuccess("Success Update " . $id);
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
+    }
+
+    // if ($res == "success"){
+
+    //     $pathcontent = getPathContent($id);
+    //     //path content concate;
+    //     $p = $pathcontent;
+    //     $path = getBaseLocation() . "/" . $p->domain . "/" . 
+    //     $p->asset_namespace . "/" . $p->date_namespace . "/" . 
+    //     $p->time_namespace . "/";
+
+    //     $myfile = fopen($path .  'index.html', "w");
+    //     if (!$myfile){
+    //         die(hasInternalError("cannot write file"));
+    //     } else {
+    //         fwrite($myfile, $content);
+    //         fclose($myfile);
+    //         chmod($path . 'index.html', 0777); 
+    //         hasSuccess("Success writing file");
+    //     }
+    // }
+}
+
+
+function updateContentById($contentid = "", $bodycontent = ""){
+    include 'local-config.php';
+    try {
+        $sql    = "UPDATE t_content SET body_content = '".$bodycontent."' WHERE id = '".$contentid."' ";
+        $action = $conn->query($sql);
+        if ($action !== TRUE) {
+            hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
+        } 
+        hasSuccess("Success Update");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
+    }
+}
+
+function uploadAsset(){
+    $model      = new TransModel;
+    $id         = $_POST['content_id'];
+    $type       = $_POST['type'];
+    $filename   = $id . '_' . hrtime(true) . '.' . $type;
+
+    $insert = [
+        "content_id" => $id,
+        "name" => $filename,
+        "flag" => "Y"
+    ];
+
+    try {
+        $model->store("t_asset", $insert, "Admin");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
+    }
+    
+    $data = new stdClass;
+    $data->filename = $filename;
+    hasSuccess("Berhasil Menyimpan Nama File", $data);
 }
