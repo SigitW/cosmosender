@@ -9,8 +9,8 @@ if ($isId)
 <body class="container">
     <h3 class="mb-3">Content Management</h3>
     <h5 class="mb-3" id="brand-title"></h5>
-    <div class="alert alert-danger danger-search mb-3">
-    </div>
+    <div class="alert alert-danger danger-search display-none mb-3"></div>
+    <div class="alert alert-success success-search display-none mb-3"></div>
     <div class="text-end mb-2">
         <button class="btn btn-sm btn-light" id="btn-add"><i class="bi bi-plus-lg"></i> Add</button>
     </div>
@@ -51,16 +51,16 @@ if ($isId)
                         <label for="" class="mb-1">Date</label>
                         <input type="date" name="" id="add-date" class="form-control mb-3"/>
                         <label for="" class="mb-1">Blast Hour</label>
-                        <select name="" id="add-hour" class="form-control mb-3">
-                            <option value="1100">11:00</option>
-                            <option value="1700">17:00</option>
+                        <select name="" id="add-time" class="form-control mb-3">
+                            <option value="11:00">11:00</option>
+                            <option value="17:00">17:00</option>
                         </select>
                     </div>
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success" id="btn-save-config"><i class="bi bi-check-lg"></i> Save</button>
+                <button type="button" class="btn btn-sm btn-success" id="btn-save-config" onclick="createContent()"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </div>
     </div>
@@ -75,25 +75,26 @@ if ($isId)
             </div>
             <div class="modal-body">
                 <div class="alert alert-warning warning-edit display-none mb-3"></div>
+                <input type="hidden" name="" id="edit-id"/>
                 <div class="row">
                     <div class="col-md-12 col-xs-12">
                         <label for="" class="mb-1">Materi</label>
                         <input type="text" name="" id="edit-materi" class="form-control mb-3"/>
                         <label for="" class="mb-1">Subject</label>
                         <input type="text" name="" id="edit-subject" class="form-control mb-3"/>
-                        <label for="" class="mb-1">Date</label>
+                        <!-- <label for="" class="mb-1">Date</label>
                         <input type="date" name="" id="edit-date" class="form-control mb-3"/>
                         <label for="" class="mb-1">Blast Hour</label>
                         <select name="" id="edit-hour" class="form-control mb-3">
-                            <option value="1100">11:00</option>
-                            <option value="1700">17:00</option>
-                        </select>
+                            <option value="11:00">11:00</option>
+                            <option value="17:00">17:00</option>
+                        </select> -->
                     </div>
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-success" id="btn-save-config"><i class="bi bi-check-lg"></i> Save</button>
+                <button type="button" class="btn btn-sm btn-success" onclick="saveEdit()"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </div>
     </div>
@@ -124,7 +125,7 @@ if ($isId)
                         <form action="#" enctype="multipart/form-data">
                             <div style="margin-bottom:7px;">Upload File :</div>
                             <input type="file" class="form-control" name="file" id="files" style="margin-bottom:7px;" accept="image/png, image/gif, image/jpeg, image/jpg" multiple>
-                            <a href="#" class="btn btn-sm btn-primary" style="width:100%;" id="btn-upload"><i class="bi bi-arrow-bar-up"></i> Upload</a>
+                            <a href="#" class="btn btn-sm btn-primary" style="width:100%;" id="btn-upload" onclick="uploadAsset()"><i class="bi bi-arrow-bar-up"></i> Upload</a>
                             <hr>
                             <span style="color:gray;font-size: 12px;">* klik url dibawah asset untuk meng-copy url asset tersebut</span>
                             <div class="mt-1" style="width:100%;height:500px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel">
@@ -145,7 +146,6 @@ if ($isId)
 
 <?php include '../../footer.php' ?>
 <script>
-
 
     var textArea = document.getElementById("content-editor");
     var editor = CodeMirror.fromTextArea(textArea, {
@@ -225,7 +225,7 @@ if ($isId)
                             '<td>'+item.time_namespace+'</td>'+
                             '<td>'+
                             '<div class="hstack gap-3 text-center">'+
-                            '<div class="btn-edit ms-3" onclick="showEdit(\''+item.id+'\')"><i class="bi bi-pencil-square"></i> Edit</div><div class="vr"></div>'+
+                            '<div class="btn-edit ms-3" onclick="showEdit(\''+item.id+'\',\''+item.materi_name+'\', \''+item.subject+'\')"><i class="bi bi-pencil-square"></i> Edit</div><div class="vr"></div>'+
                             '<div class="btn-edit" onclick="showContentById(\''+item.id+'\', \''+item.materi_name+'\',\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-grid"></i> Content</div><div class="vr"></div>'+
                             '<div class="btn-edit" onclick="showPreview(\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-search"></i> View</div>'+
                             '</div>'+
@@ -241,8 +241,42 @@ if ($isId)
         })
     }
 
-    function showEdit(id){
+    function showEdit(id, materi, subject){
+        $(".warning-edit").hide();
+        $(".warning-edit").html("");
+        $("#edit-id").val(id);
+        $("#edit-materi").val(materi);
+        $("#edit-subject").val(subject);
         $("#modal-edit").modal('show');
+    }
+
+    function saveEdit(){
+
+        const id      = $("#edit-id").val();
+        const materi  = $("#edit-materi").val();
+        const subject = $("#edit-subject").val();
+
+        $.ajax({
+            url:'<?= $baseurl ?>src/content-api.php',
+            method:"POST",
+            data:{
+                do:"update-materi",
+                content_id:id, 
+                materi:materi,
+                subject:subject
+            }, success:function(res){
+                if (res.code == "200"){
+                    $(".success-search").fadeIn().delay(2000).fadeOut();
+                    $(".success-search").html(res.message);
+                    $("#modal-edit").modal('hide');
+                    loadContent();
+                } 
+            }, error:function(er){
+                console.log(er);
+                $(".warning-edit").fadeIn();
+                $(".warning-edit").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+            }
+        })
     }
 
     function showContentById(id, materi, tanggal, jam){
@@ -334,11 +368,10 @@ if ($isId)
 
     function sendContentToServer(content, datenamespace, timenamespace){
         const path = uploadpath + datenamespace + "/" + timenamespace + "/";
-        console.log(apipath);
+        console.log(path);
         $.ajax({
             url:apipath + "api/api-content.php",
             method:"POST",
-            header : {},
             data:{
                 do:"upload-content", 
                 id:"1",
@@ -347,8 +380,8 @@ if ($isId)
                 path:path
             }, success:function(res){
                 if (res.code == "200"){
-                    $(".success-edit-content").fadeIn();
                     $(".success-edit-content").html(res.message);
+                    $(".success-edit-content").fadeIn().delay(2000).fadeOut();
                 }
             }, error:function(er){
                 console.log(er);
@@ -406,8 +439,8 @@ if ($isId)
             url: '<?= $baseurl ?>src/content-api.php',
             method: 'POST',
             data : {
-                token : token,
-                id : userid,
+                token : "1",
+                id : "1",
                 content_id : id,
                 strimg : base64Files,
                 type : type,
@@ -415,8 +448,7 @@ if ($isId)
             },
             success: function(res){
                 if (res.code == "200"){
-                    loadPanelAsset(type, res.data.filename);
-                    $("#files").val("");
+                    uploadAssetToServer(type, res.data.filename);
                 }
             },
             error: function(er){
@@ -446,7 +478,7 @@ if ($isId)
 
         const dateNamespace = $("#c-date").val();
         const timeNamespace = $("#c-time").val();
-        const path          = uploadpath + datenamespace + "/" + timenamespace + "/";
+        const path          = uploadpath + dateNamespace + "/" + timeNamespace + "/" + "img/";
 
         $.ajax({
             url: apipath + 'api/api-content.php',
@@ -464,6 +496,8 @@ if ($isId)
                 if (res.code == "200"){
                     loadPanelAsset();
                     $("#files").val("");
+                    $(".success-edit-content").html(res.message);
+                    $(".success-edit-content").fadeIn().delay(2000).fadeOut();
                 }
             },
             error: function(er){
@@ -511,6 +545,105 @@ if ($isId)
             return filename = filename.substring(1);
         }
         return "";
+    }
+
+    function createContent(){
+        const materi    = $("#add-materi").val();
+        const subject   = $("#add-subject").val();
+        const date      = $("#add-date").val();
+        const time      = $("#add-time").val();
+
+        if (date == ""){
+            alert("Tolong isikan Content Blast Date");
+            return;
+        }
+        
+        if (time == ""){
+            alert("Tolong isikan Content Blast Time");
+            return;
+        }
+
+        const arrDate = date.split('-');
+        const arrTime = time.split(':');
+
+        let mappedDate = "";
+        $.each(arrDate, function(i, item){            
+            mappedDate += arrDate[i];
+            if (i == 0)
+                mappedDate = mappedDate.substring(2,4);
+        });
+
+        let mappedTime = "";
+        $.each(arrTime, function(i, item){
+            mappedTime += arrTime[i];
+        });
+
+        $.ajax({
+            url: '<?= $baseurl ?>src/content-api.php',
+            method: 'POST',
+            data: {
+                token : "1",
+                id : "1",
+                brandid : '<?= $id ?>',
+                materi : materi,
+                subject : subject,
+                date : mappedDate,
+                time : mappedTime,
+                do : 'create-content'
+            },
+            success: function (res) {
+                if (res.code == "200") {
+                    createDirToServer(mappedDate, mappedTime);
+                } else {
+                    console.log(res);
+                    $(".warning-add").fadeIn();
+                    $(".warning-add").html(res.responseJSON == null ? res.responseText : res.responseJSON.message);
+                }
+            },
+            error: function (er) {
+                console.log(er);
+                $(".warning-add").fadeIn();
+                $(".warning-add").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+            }
+        });
+    }
+
+    function createDirToServer(mappedDate, mappedTime){
+
+        const strBrandData = JSON.stringify(objBrand);
+
+        $.ajax({
+            url: apipath + 'api/api-content.php',
+            method: 'POST',
+            headers: {
+            },
+            data: {
+                token : "1",
+                id : "1",
+                brand : strBrandData,
+                date : mappedDate,
+                time : mappedTime,
+                do : 'create-content'
+            },
+            success: function (res) {
+                if (res.code == "200"){
+                    $(".success-search").html(res.message);
+                    $(".success-search").fadeIn().delay(2000).fadeOut();
+                    $("#modal-add").modal("hide");
+                    loadContent();
+                } else {
+                    console.log(res);
+                    $(".warning-add").fadeIn();
+                    $(".warning-add").html(res.responseJSON == null ? res.responseText : res.responseJSON.message);
+                }
+            },
+            error: function (er) {
+                console.log(er);
+                $(".warning-add").fadeIn();
+                $(".warning-add").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+            }
+        });
+
     }
 
 </script>

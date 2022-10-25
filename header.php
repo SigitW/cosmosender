@@ -20,4 +20,6 @@
     <script src="<?= $baseurl; ?>asset/codemirror/lib/codemirror.js"></script>
     <script src="<?= $baseurl; ?>asset/codemirror/mode/xml/xml.js"></script>
     <script src="<?= $baseurl; ?>asset/codemirror/addon/edit/matchbrackets.js"></script>
+    <script src="<?= $baseurl; ?>asset/codemirror/addon/edit/search.js"></script>
+    <script src="<?= $baseurl; ?>asset/codemirror/addon/edit/searchcursor.js"></script>
 </head>

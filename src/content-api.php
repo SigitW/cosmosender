@@ -15,6 +15,15 @@ switch ($do) {
     case 'update-content':
         updateContent(); 
         break;          
+    case 'upload-asset':
+        uploadAsset();
+        break;
+    case 'create-content':
+        createContent();
+        break;    
+    case 'update-materi':
+        updateEdit();
+        break;       
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -135,7 +144,7 @@ function updateContent(){
         $sql    = "UPDATE t_content SET body_content = '".$content."' WHERE id = '".$id."' ";
         $action = $conn->query($sql);
         if ($action !== TRUE) {
-            hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
+            hasInternalError("[TransModel] t_content ". $conn->error, 1);
         } 
         hasSuccess("Success Update " . $id);
     } catch (\Throwable $th) {
@@ -195,8 +204,63 @@ function uploadAsset(){
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
     }
-    
+
     $data = new stdClass;
     $data->filename = $filename;
     hasSuccess("Berhasil Menyimpan Nama File", $data);
+}
+
+function createContent(){
+
+    $model = new TransModel;
+    $obj = new stdClass;
+    $obj->brandid = $_POST['brandid'];
+    $obj->date = $_POST['date'];
+    $obj->time = $_POST['time'];
+    $obj->materi = $_POST['materi'];
+    $obj->subject = $_POST['subject'];
+
+    $notavaildatetime = $obj->date == "" || $obj->time == "";
+
+    if ($notavaildatetime) {
+        hasInternalError("Input Date And Time Folder in form is Mandatory !");
+    } 
+
+    $where = "WHERE brand_id = '".$obj->brandid."' AND date_namespace = '".$obj->date."' AND time_namespace = '".$obj->time."' ";
+    $dataContent = $model->select("t_content", [], $where);
+    if (isset($dataContent) && count($dataContent) > 0) {
+        hasInternalError("Content Data Has Stored Before !");
+    }
+
+    $data = [
+        "brand_id" => $obj->brandid,
+        "date_namespace" => $obj->date,
+        "time_namespace" => $obj->time,
+        "materi_name" => $obj->materi,
+        "subject" => $obj->subject,
+        "flag" => "Y"
+    ];
+    
+    try {
+        $model->store("t_content", $data, "Admin");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
+    }
+
+    hasSuccess("Berhasil Menympan Data ". $obj->materi);
+}
+
+function updateEdit(){
+    $model = new TransModel;
+    $update = [
+        "materi_name" => $_POST['materi'],
+        "subject" => $_POST['subject']
+    ];
+    $id = ["id" => $_POST['content_id']];
+    try {
+        $model->update("t_content", $update, $id, "Admin");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
+    }
+    hasSuccess("Berhasil Update Materi ".$update['materi_name']);
 }
