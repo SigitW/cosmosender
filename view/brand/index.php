@@ -43,12 +43,18 @@
                 <input type="text" name="" id="name" class="form-control mb-3"> 
                 <label for="" class="mb-1"> Domain</label>
                 <input type="text" name="" id="domain" class="form-control mb-3"> 
+                <label for="" class="mb-1"> Content Domain</label>
+                <input type="text" name="" id="content_domain" class="form-control mb-3"> 
+                <label for="" class="mb-1"> Actual Path</label>
+                <input type="text" name="" id="actual_path" class="form-control mb-3"> 
+                <label for="" class="mb-1"> Blast Limit</label>
+                <input type="number" name="" id="blast_limit" class="form-control mb-3"> 
+                <label for="" class="mb-1"> Blast Hour Interval</label>
+                <input type="number" name="" id="blast_hour_interval" class="form-control mb-3"> 
                 <label for="" class="mb-1"> Newsletter Folder</label>
                 <input type="text" name="" id="aseet_namespace" class="form-control mb-3"> 
                 <label for="" class="mb-1"> Service</label>
-                <select name="" id="sel-service" class="form-control">
-
-                </select>
+                <select name="" id="sel-service" class="form-control"></select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-success" id="btn-save"><i class="bi bi-check-lg"></i> Save</button>
@@ -144,6 +150,10 @@
                     $("#domain").val(item.domain);
                     $("#aseet_namespace").val(item.aseet_namespace);
                     $("#sel-service").val(item.service_id);
+                    $("#actual_path").val(item.actual_path);
+                    $("#content_domain").val(item.content_domain);
+                    $("#blast_limit").val(item.blast_limit);
+                    $("#blast_hour_interval").val(item.blast_hour_interval);
                 }
             }, error:function(err){
                 $(".alert-warning").fadeIn();
@@ -157,6 +167,10 @@
         const domain            = $("#domain").val();
         const newsletter        = $("#aseet_namespace").val();
         const service           = $("#sel-service option:selected").val();
+        const path              = $("#actual_path").val();
+        const contentdomain     = $("#content_domain").val();
+        const blastlimit        = $("#blast_limit").val();
+        const blasthourinterval = $("#blast_hour_interval").val();
 
         $.ajax({
             url : '<?= $baseurl ?>src/brand-api.php',
@@ -166,7 +180,11 @@
                 name : name,
                 domain : domain,
                 newsletter : newsletter,
-                service : service
+                service : service,
+                path:path,
+                content_domain:contentdomain,
+                blast_limit:blastlimit,
+                blast_hour_interval:blasthourinterval
             }, success : function(res){
                 if (res.code == "200"){
                     $("#modal-add").modal("hide");
@@ -187,6 +205,10 @@
         const domain            = $("#domain").val();
         const newsletter        = $("#aseet_namespace").val();
         const service           = $("#sel-service option:selected").val();
+        const path              = $("#actual_path").val();
+        const contentdomain     = $("#content_domain").val();
+        const blastlimit        = $("#blast_limit").val();
+        const blasthourinterval = $("#blast_hour_interval").val();
 
         $.ajax({
             url : '<?= $baseurl ?>src/brand-api.php',
@@ -197,7 +219,11 @@
                 name : name,
                 domain : domain,
                 newsletter : newsletter,
-                service : service
+                service : service,
+                path:path,
+                content_domain:contentdomain,
+                blast_limit:blastlimit,
+                blast_hour_interval:blasthourinterval
             }, success : function(res){
                 if (res.code == "200"){
                     $("#modal-add").modal("hide");
@@ -206,8 +232,9 @@
                     load();
                 }
             }, error : function(er){
+                console.log(er);
                 $(".alert-warning").fadeIn();
-                $(".alert-warning").html(er.responseText);
+                $(".alert-warning").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
             }
         })
     }

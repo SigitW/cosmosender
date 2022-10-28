@@ -32,12 +32,13 @@ function hasNotFound($response){
     exit();
 }
 
-function hasSuccess($msg = "Success", $isi = null){
+function hasSuccess($msg = "Success", $isi = null, $page = 0){
     $response = array(
         'status' => "success",
         'code' => "200",
         'message' => $msg, 
-        'data' => $isi
+        'data' => $isi,
+        'page' => $page
     );
     header('Content-type: application/json');
     http_response_code(200);

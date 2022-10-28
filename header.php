@@ -1,6 +1,14 @@
 <?php 
+    include  "common-config.php";
     $appname = "cosmosender";
-    $baseurl = "http://" . $_SERVER['SERVER_NAME'] . "/" . $appname . "/";
+    $base    = "";
+
+    if ($__TYPE_PROJECT == "prod")
+        $base = "https://"; 
+    else
+        $base = "http://"; 
+
+    $baseurl = $base . $_SERVER['SERVER_NAME'] . "/" . $appname . "/";
     // echo $baseurl;
 ?>
 
@@ -13,6 +21,13 @@
     <title>Cosmo Sender</title>
     <link rel="stylesheet" href="<?= $baseurl; ?>asset/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= $baseurl; ?>asset/icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="<?= $baseurl; ?>asset/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="<?= $baseurl; ?>asset/codemirror/theme/dracula.css">
     <link rel="stylesheet" href="<?= $baseurl; ?>asset/style.css">
     <script src="<?= $baseurl; ?>asset/bootstrap/js/bootstrap.min.js"></script>
+    <script src="<?= $baseurl; ?>asset/codemirror/lib/codemirror.js"></script>
+    <script src="<?= $baseurl; ?>asset/codemirror/mode/xml/xml.js"></script>
+    <script src="<?= $baseurl; ?>asset/codemirror/addon/edit/matchbrackets.js"></script>
+    <script src="<?= $baseurl; ?>asset/codemirror/addon/edit/search.js"></script>
+    <script src="<?= $baseurl; ?>asset/codemirror/addon/edit/searchcursor.js"></script>
 </head>

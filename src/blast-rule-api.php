@@ -182,8 +182,12 @@ function loadBlastRuleRelayByRuleId($id) : array {
     foreach ($data as $i => $p) {
         $relays = loadRelayByDetailId($p['relay_id']);
         if (count($relays) > 0){
-            $data[$i]['host_name'] = count($relays) == 0 ? "-" : $relays[0]['host_name'];
-            $data[$i]['email'] = count($relays) == 0 ? "-" : $relays[0]['email'];
+            $data[$i]['host_name']      = count($relays) == 0 ? "-" : $relays[0]['host_name'];
+            $data[$i]['email']          = count($relays) == 0 ? "-" : $relays[0]['email'];
+            $data[$i]['email_alias']    = count($relays) == 0 ? "-" : $relays[0]['email_alias'];
+            $data[$i]['port']           = count($relays) == 0 ? "-" : $relays[0]['port'];
+            $data[$i]['password']       = count($relays) == 0 ? "-" : $relays[0]['password'];
+            $data[$i]['email_alias']    = count($relays) == 0 ? "-" : $relays[0]['email_alias'];
         }
     }
     return $data;
@@ -191,7 +195,7 @@ function loadBlastRuleRelayByRuleId($id) : array {
 
 function loadRelayByDetailId($id) : array {
     $model  = new TransModel;
-    $select = ["id", "email", "host_id"];
+    $select = ["id", "email", "host_id", "port", "password", "email_alias"];
     $where  = "WHERE id = '".$id."'";
     $data   = [];
     try {
@@ -339,9 +343,10 @@ function updateRule(){
                         mbrd.rule_id , mbrd.relay_id , mer.host_id, mer.email
                         FROM m_blast_rule_detail mbrd 
                         INNER JOIN m_email_relay mer ON mer.id = mbrd.relay_id 
+                        WHERE mbrd.flag = 'Y'
                     ) a";
 
-        $whereDetail = "WHERE a.rule_id = '".$ruleId."' AND a.host_id = '".$oriHost."'";
+        $whereDetail = "WHERE a.rule_id = '".$ruleId."' AND a.host_id = '".$oriHost."' LIMIT 1";
 
         try {
             $details = $model->select($sqlJoin, [],  $whereDetail);
@@ -352,7 +357,7 @@ function updateRule(){
         }
     }
 
-    // jika ridak ada / email host masih sama dengan sebelumnya
+    // jika tidak ada / email host masih sama dengan sebelumnya
     // lakukan update
     $data = [
         "name" => $name,
@@ -361,7 +366,7 @@ function updateRule(){
     $where = ["id"=>$ruleId];
     try {
         $model->update("m_blast_rule", $data, $where, "Admin");
-        hasSuccess("Berhasil Update Rules");
+        hasSuccess("Berhasil Update Rule ");
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }

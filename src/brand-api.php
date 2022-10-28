@@ -81,7 +81,11 @@ function saveAdd(){
         "aseet_namespace" => $_POST['newsletter'],
         "domain" => $_POST['domain'],
         "flag" =>  "Y",
-        "service_id" => $_POST['service']
+        "service_id" => $_POST['service'],
+        "actual_path" => $_POST['path'],
+        "content_domain" => $_POST['content_domain'],
+        "blast_limit" => $_POST['blast_limit'] == '' ? 0 : $_POST['blast_limit'],
+        "blast_hour_interval" => $_POST['blast_hour_interval'] == '' ? 0 : $_POST['blast_hour_interval']
     ];
 
     try {
@@ -99,7 +103,11 @@ function saveEdit(){
         "name" => $_POST['name'],
         "aseet_namespace" => $_POST['newsletter'],
         "domain" => $_POST['domain'],
-        "service_id" => $_POST['service']
+        "service_id" => $_POST['service'],
+        "actual_path" => $_POST['path'],
+        "content_domain" => $_POST['content_domain'],
+        "blast_limit" => $_POST['blast_limit'] == '' ? 0 : $_POST['blast_limit'],
+        "blast_hour_interval" => $_POST['blast_hour_interval'] == '' ? 0 : $_POST['blast_hour_interval']
     ];
 
     $where = [
@@ -124,6 +132,25 @@ function loadBrandById() {
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
-    hasSuccess("",$data);
+
+    $sqlServices = "(SELECT 
+                    ms2.domain as server, ms.service, ms.id
+                    FROM m_service ms 
+                    INNER JOIN m_server ms2 ON ms2.id = ms.server_id) a";
+
+    foreach ($data as $i => $p) {
+        $serviceName = "";
+        $services = $model->select($sqlServices, [], "WHERE a.id = '".$p['service_id']."'");
+        if (isset($services)){
+            $serviceName = $services[0]['server'] . $services[0]['service'];
+        }
+
+        // build service path
+        $data[$i]['service_path'] = $serviceName;
+        $data[$i]['upload_path']  = $p['actual_path'] . $p['domain'] . "/" . $p['aseet_namespace'] . "/"; 
+        $data[$i]['content_path'] = $p['content_domain'] . $p['domain'] . "/" . $p['aseet_namespace'] . "/"; 
+    }
+
+    hasSuccess("", $data);
 }
 ?>
