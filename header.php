@@ -1,6 +1,13 @@
 <?php 
+    include  "common-config.php";
     $appname = "cosmosender";
-    $base    = "http://"; 
+    $base    = "";
+
+    if ($__TYPE_PROJECT == "prod")
+        $base = "https://"; 
+    else
+        $base = "http://"; 
+
     $baseurl = $base . $_SERVER['SERVER_NAME'] . "/" . $appname . "/";
     // echo $baseurl;
 ?>
