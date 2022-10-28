@@ -111,6 +111,7 @@
 <?php include '../../footer.php' ?>
 <script>
 
+    const base = '<?= $base; ?>';
     $(document).ready(function(){
         load();
     });
@@ -127,7 +128,7 @@
                     $.each(res.data, function(i, item){
                         const num = 1 + i;
 
-                        const urlpath = "http://" + item.server_domain + item.service;
+                        const urlpath = base + item.server_domain + item.service;
 
                         str += '<tr>'+
                             '<td>'+num+'</td>'+

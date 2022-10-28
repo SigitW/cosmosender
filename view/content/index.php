@@ -11,11 +11,14 @@ if ($isId)
     <h5 class="mb-3" id="brand-title"></h5>
     <div class="alert alert-danger danger-search display-none mb-3"></div>
     <div class="alert alert-success success-search display-none mb-3"></div>
+    <div class="mb-3 text-end">
+        <a href="../index.php" class="btn-menu"><i class="bi bi-chevron-left"></i> Kembali</a>
+    </div>
     <div class="text-end mb-2">
         <button class="btn btn-sm btn-light" id="btn-add"><i class="bi bi-plus-lg"></i> Add</button>
     </div>
     <div class="over-x">
-        <table class="table table-dark table-striped table-hover table-responsive-xs">
+        <table class="table table-dark table-striped table-hover text-nowrap">
             <thead>
                 <tr>
                 <td>#</td>
@@ -112,7 +115,7 @@ if ($isId)
                 <div class="alert alert-success success-edit-content display-none mb-3"></div>
                 <input type="hidden" name="" id="c-date"/>
                 <input type="hidden" name="" id="c-time"/>
-                <input type="hidden" name="" id="id-content"/>
+                <input type="hidden" name="content_id" id="id-content"/>
                 <div class="row">
                     <div class="col-md-4 col-xs-12" style="margin-bottom:20px;">
                         <div>
@@ -121,16 +124,9 @@ if ($isId)
                             <div id="content-tanggal" style="font-size: 12px;" class="mb-3"> - </div>
                             <div id="content-materi"> - </div>
                         </div>
-                        <hr style="color:black">
-                        <form action="#" enctype="multipart/form-data">
-                            <div style="margin-bottom:7px;">Upload File :</div>
-                            <input type="file" class="form-control" name="file" id="files" style="margin-bottom:7px;" accept="image/png, image/gif, image/jpeg, image/jpg" multiple>
-                            <a href="#" class="btn btn-sm btn-primary" style="width:100%;" id="btn-upload" onclick="uploadAsset()"><i class="bi bi-arrow-bar-up"></i> Upload</a>
-                            <hr>
-                            <span style="color:gray;font-size: 12px;">* klik url dibawah asset untuk meng-copy url asset tersebut</span>
-                            <div class="mt-1" style="width:100%;height:500px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel">
-                            </div>
-                        </form>
+                        <hr/>    
+                        <span style="color:gray;font-size: 12px;">* klik url dibawah asset untuk meng-copy url asset tersebut</span>
+                        <div class="mt-1" style="width:100%;height:500px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel"></div>
                     </div>
                     <div class="col-md-8 col-xs-12">
                         <textarea name="" id="content-editor" style="width:100%;"></textarea>
@@ -139,6 +135,34 @@ if ($isId)
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-success" id="btn-save-content"><i class="bi bi-check-lg"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-upload" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-add" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Upload Asset</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning warning-upload display-none mb-2">Tolong pilih file dulu</div>
+                <form action="" id="form-upload" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="brand_name" id="upload-brand-name">
+                    <input type="hidden" name="content_id" id="upload-content-id">
+                    <input type="hidden" name="upload_path" id="upload-path">
+                    <input type="hidden" name="upload_date" id="upload-date">
+                    <input type="hidden" name="upload_hour" id="upload-hour">
+                    <input type="hidden" name="back_url" id="upload-back-url">
+                    <input type="hidden" name="update_url" id="update-url">
+                    <input type="hidden" name="update_do" id="update-do">
+                    <input type="file" name="fileupload[]" id="fileupload" class="form-control" accept="image/*" multiple>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary" id="btn-save-upload"><i class="bi upload"></i> Upload</button>
             </div>
         </div>
     </div>
@@ -153,7 +177,7 @@ if ($isId)
                     mode: "xml",
                     htmlMode:true,
                     matchBrackets: true,
-                    theme:"dracula"
+                    theme:"dracula",
                 });    
     editor.setSize(null, 800);
 
@@ -176,6 +200,7 @@ if ($isId)
         $("#modal-add").modal("show");
     })
 
+    var base        = '<?= $base; ?>';
     var objBrand    = {};
     var apipath     = "";
     var contentpath = "";
@@ -189,13 +214,14 @@ if ($isId)
                 console.log(res);
                 if (res.code == "200" && res.data.length > 0){
                     objBrand    = res.data[0];
-                    apipath     = "http://" + objBrand.service_path;
+                    apipath     = base + objBrand.service_path;
                     contentpath = objBrand.content_path;
                     uploadpath  = objBrand.upload_path;
                     $("#brand-title").html(objBrand.name);
                 }
                 console.log(apipath);
                 console.log(contentpath);
+                console.log(uploadpath);
             }, error:function(er){
                 $(".danger-search").fadeIn();
                 $(".danger-search").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -219,16 +245,15 @@ if ($isId)
                         const num = 1 + i;
                         str += '<tr>'+
                             '<td>'+num+'</td>'+
-                            '<td>'+ replaceNull(item.materi_name)+'</td>'+
+                            '<td width="500px;">'+ replaceNull(item.materi_name)+'</td>'+
                             '<td>'+ replaceNull(item.subject)+'</td>'+
                             '<td>'+item.date_namespace+'</td>'+
                             '<td>'+item.time_namespace+'</td>'+
                             '<td>'+
-                            '<div class="hstack gap-3 text-center">'+
-                            '<div class="btn-edit ms-3" onclick="showEdit(\''+item.id+'\',\''+item.materi_name+'\', \''+item.subject+'\')"><i class="bi bi-pencil-square"></i> Edit</div><div class="vr"></div>'+
-                            '<div class="btn-edit" onclick="showContentById(\''+item.id+'\', \''+item.materi_name+'\',\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-grid"></i> Content</div><div class="vr"></div>'+
-                            '<div class="btn-edit" onclick="showPreview(\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-search"></i> View</div>'+
-                            '</div>'+
+                            '<div class="btn-edit d-inline ms-4 me-4" onclick="showEdit(\''+item.id+'\',\''+item.materi_name+'\', \''+item.subject+'\')"><i class="bi bi-pencil-square"></i> Edit</div>'+
+                            '<div class="btn-edit d-inline me-4" onclick="showUpload(\''+item.id+'\', \''+item.materi_name+'\',\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-upload"></i> Upload Asset</div>'+
+                            '<div class="btn-edit d-inline me-4" onclick="showContentById(\''+item.id+'\', \''+item.materi_name+'\',\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-grid"></i> Content</div>'+
+                            '<div class="btn-edit d-inline me-4" onclick="showPreview(\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-search"></i> View</div>'+
                             '</td>'+
                             '</tr>';
                     });
@@ -240,6 +265,29 @@ if ($isId)
             }
         })
     }
+
+    function showUpload(id, materi, tgl, jam){
+        $("#modal-upload").modal("show");
+        $("#upload-brand-name").val(objBrand.name);
+        $("#upload-path").val(uploadpath);
+        $("#upload-content-id").val(id);
+        $("#upload-date").val(tgl);
+        $("#upload-hour").val(jam);
+        $("#update-url").val('<?= $baseurl ?>src/content-api.php');
+        $("#update-do").val('insert-name-asset');
+        $("#form-upload").attr("action", apipath + 'upload.php');
+        $("#upload-back-url").val(window.location.href);
+    }
+
+    $("#btn-save-upload").on("click", function(){
+
+        if ($("#fileupload").val() == ''){
+            $(".warning-upload").fadeIn().delay(2000).fadeOut();
+            return false;
+        }
+        
+        $("#form-upload").submit();
+    });
 
     function showEdit(id, materi, subject){
         $(".warning-edit").hide();
@@ -404,14 +452,14 @@ if ($isId)
 
     function panelAsset(item){
         return '<div style="border-radius:5px 5px 0px 0px;height:100px;margin-top:10px;text-align:center;cursor:pointer;background-color:grey;">'+
-        '<img src="http://'+item+'" style="height:100%;margin:auto 0px">'+
+        '<img src="'+ base + item +'" style="height:100%;margin:auto 0px">'+
         '<br/>'+
-        '<input type="text" class="form-control" style="cursor:pointer;color:grey;border-radius: 0px 0px 5px 5px;width:100%;" value="http://'+item+'" onclick="navigator.clipboard.writeText(this.value);" readonly/>' +
+        '<input type="text" class="form-control" style="cursor:pointer;color:grey;border-radius: 0px 0px 5px 5px;width:100%;" value="'+ base + item + '" onclick="navigator.clipboard.writeText(this.value);" readonly/>' +
         '<div/>';
     }
 
     function showPreview(tgl, jam){
-        const pathPreview = "http://" + contentpath + tgl + "/" + jam + "/";
+        const pathPreview = + base + contentpath + tgl + "/" + jam + "/";
         window.open(pathPreview);
     }
 
@@ -615,8 +663,6 @@ if ($isId)
         $.ajax({
             url: apipath + 'api/api-content.php',
             method: 'POST',
-            headers: {
-            },
             data: {
                 token : "1",
                 id : "1",
@@ -643,7 +689,6 @@ if ($isId)
                 $(".warning-add").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
             }
         });
-
     }
 
 </script>

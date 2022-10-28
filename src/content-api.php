@@ -24,6 +24,9 @@ switch ($do) {
     case 'update-materi':
         updateEdit();
         break;       
+    case 'insert-name-asset':
+        insertNameAsset();
+        break;    
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -263,4 +266,31 @@ function updateEdit(){
         hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
     }
     hasSuccess("Berhasil Update Materi ".$update['materi_name']);
+}
+
+function insertNameAsset(){
+    $model = new TransModel;
+
+    $id       = $_POST['content_id'];
+    $stArName = $_POST['arr_name'];
+    $arrName  = json_decode($stArName);
+
+    $i = 0;
+    while ($i < count($arrName)) {
+        
+        $insert = [
+            "content_id" => $id,
+            "name" => $arrName[$i],
+            "flag" => "Y"
+        ];
+        try {
+            $model->store("t_asset", $insert, "Admin");
+        } catch (\Throwable $th) {
+            hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());
+        }
+
+        $i ++;
+    }
+
+    hasSuccess("Berhasil Menyimpan Asset");
 }

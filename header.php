@@ -1,6 +1,7 @@
 <?php 
     $appname = "cosmosender";
-    $baseurl = "http://" . $_SERVER['SERVER_NAME'] . "/" . $appname . "/";
+    $base    = "http://"; 
+    $baseurl = $base . $_SERVER['SERVER_NAME'] . "/" . $appname . "/";
     // echo $baseurl;
 ?>
 

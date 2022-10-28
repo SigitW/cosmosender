@@ -182,8 +182,12 @@ function loadBlastRuleRelayByRuleId($id) : array {
     foreach ($data as $i => $p) {
         $relays = loadRelayByDetailId($p['relay_id']);
         if (count($relays) > 0){
-            $data[$i]['host_name'] = count($relays) == 0 ? "-" : $relays[0]['host_name'];
-            $data[$i]['email'] = count($relays) == 0 ? "-" : $relays[0]['email'];
+            $data[$i]['host_name']      = count($relays) == 0 ? "-" : $relays[0]['host_name'];
+            $data[$i]['email']          = count($relays) == 0 ? "-" : $relays[0]['email'];
+            $data[$i]['email_alias']    = count($relays) == 0 ? "-" : $relays[0]['email_alias'];
+            $data[$i]['port']           = count($relays) == 0 ? "-" : $relays[0]['port'];
+            $data[$i]['password']       = count($relays) == 0 ? "-" : $relays[0]['password'];
+            $data[$i]['email_alias']    = count($relays) == 0 ? "-" : $relays[0]['email_alias'];
         }
     }
     return $data;
@@ -191,7 +195,7 @@ function loadBlastRuleRelayByRuleId($id) : array {
 
 function loadRelayByDetailId($id) : array {
     $model  = new TransModel;
-    $select = ["id", "email", "host_id"];
+    $select = ["id", "email", "host_id", "port", "password", "email_alias"];
     $where  = "WHERE id = '".$id."'";
     $data   = [];
     try {

@@ -31,14 +31,11 @@
                             '</div>'+
                             '<div class="col-md-3 mb-3" style="text-align: right;">'+
                             '<div class="mb-3">Content Service</div>'+
-                            // '<span class="badge me-1" style="background-color:orange;color:black;">Solindo / mbcontentservices </span>'+
-                            // '<span class="badge" style="background-color:lightcoral;color:black;">Niaga / mbcontentservices </span>'+
                             services +
                             '</div>'+
                             '<div class="col-md-3 mb-3" style="text-align: right;">'+
-                            '<div class="mb-3">SMTP Server</div>'+ servers +
-                            // '<span class="badge me-1" style="background-color:orange;color:black;">Solindo</span>'+
-                            // '<span class="badge" style="background-color:lightcoral;color:black;">Niaga</span>'+
+                            '<div class="mb-3">SMTP Server</div>'+ 
+                            servers +
                             '</div>'+
                             '</div>'+
                             '</div>'+
@@ -95,9 +92,9 @@
 
     function appendAction(id){
         return '<div class="card-brand-title display-none" id="panel-action-'+id+'" style="background-color: teal;font-size:20px;text-align:center;">'+
-                    '<div style="width:100%;text-align:right;"><div class="btn-edit" style="font-size:14px" onclick="hideAction(\''+id+'\')"><i class="bi bi-x-lg"></i> Close</div></div>'+
-                    '<span class="me-3 btn-edit" onclick="toMenu(\'view/content/?id='+id+'\')"><i class="bi bi-menu-button-wide me-2"></i> Content Management</span> <div class="vr"></div>'+
-                    '<span class="ms-3 btn-edit"><i class="bi bi-send-fill me-2"></i> Begin Blast</span>'+
+                    '<div style="width:100%;text-align:right;"><div class="btn-menu" style="font-size:14px" onclick="hideAction(\''+id+'\')"><i class="bi bi-x-lg"></i> Close</div></div>'+
+                    '<span class="me-3 btn-menu" onclick="toMenu(\'view/content/?id='+id+'\')"><i class="bi bi-menu-button-wide me-2"></i> Content Management</span> <div class="vr"></div>'+
+                    '<span class="ms-3 btn-menu" onclick="toMenu(\'view/blast/?id='+id+'\')"><i class="bi bi-send-fill me-2"></i> Begin Blast</span>'+
                 '</div>';
     }
 
