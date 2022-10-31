@@ -10,7 +10,7 @@
     })
     function loadBrand(){
         $.ajax({
-            url : '<?= $baseurl ?>/src/blast-rule-api.php',
+            url : '<?= $baseurl ?>src/blast-rule-api.php',
             method : "POST",
             data : {do:"load"},
             success:function(res){                

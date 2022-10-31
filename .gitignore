@@ -1,4 +1,6 @@
 basemodel
 basemodel/*
 mbcontentservices
-src/local-config.php
+src/common/local-config.php
+src/common/common-config.php
+test.php

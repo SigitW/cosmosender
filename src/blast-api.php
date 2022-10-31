@@ -14,9 +14,52 @@ switch ($do)
     case 'send-test':
         blastTest();
         break;
+    case 'check-ready':
+        checkReadyToBlast();
+        break;  
+    case 'load-by-brand':
+        loadCustByBrand();
+        break;  
+    case 'update-last-email':
+        updateLastEmailId();
+        break;          
     default:
         hasNotFound("Tidak ditemukan method");
         break;
+}
+
+function checkReadyToBlast(){
+
+    $id     = $_POST['brand_id'];
+    $model  = new TransModel();
+    $data   = [];
+    
+    try {
+        $data = $model->select("m_brand", [], "WHERE id = '".$id."'");
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+
+    $isOk = true;
+    if (isset($data) && count($data)){
+        $brand = $data[0];
+        $interval = $brand['blast_hour_interval'];
+        if ($interval > 0){
+            $selisih = getSelisihMenit($brand['last_blast_time']);
+            $isOk = $selisih > $interval;
+        } 
+    }
+
+    hasSuccess("", $isOk);
+}
+
+function getSelisihMenit($tglDb){
+    date_default_timezone_set("Asia/Jakarta");
+    $waktu_awal        = strtotime($tglDb);
+    $waktu_akhir       = strtotime(date("Y-m-d H:i:s")); 
+    $diff              = $waktu_akhir - $waktu_awal;
+    $selisihmenit      = floor($diff / 60);
+    return $selisihmenit;
 }
 
 function blastTest(){
@@ -93,7 +136,7 @@ function blastTest(){
         $mail->Password = $relay['password'];
         $mail->SMTPSecure = 'ssl';
         $mail->Port       = $relay['port'];
-        $mail->setFrom($relay['email'], $relay['email_alias']);
+        $mail->setFrom($relay['email_from'], $brand['email_alias']);
         $mail->addAddress($recipient, '');
         $mail->CharSet = "UTF-8";
         $mail->isHTML(true);
@@ -105,4 +148,71 @@ function blastTest(){
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
+}
+
+function loadCustByBrand(){
+    $model      = new TransModel;
+    $brandId    = $_POST['brand_id'];
+    $data       = [];
+
+    $brands         = $model->select("m_brand", [], "WHERE id = '".$brandId."'");
+    $brand          = $brands[0];
+    $lastEmailId    = $brand['last_email_id'];
+    $emailLimit     = $brand['blast_limit'];
+    $hasLastEmailId = isset($lastEmailId) && $lastEmailId != "";
+    $hasLimit       = isset($emailLimit) && $emailLimit != "";
+    $whereBuilder   = "WHERE brand_id = '".$brandId."' AND flag = 'Y' ";
+
+    if ($hasLastEmailId){
+        $whereBuilder .= "AND id > '".$brand['last_email_id']."' ";
+    }
+    
+    $whereBuilder .= "ORDER BY id ";
+
+    if ($hasLimit){
+        $whereBuilder .= "LIMIT ".$emailLimit." ";
+    }
+
+    // first get by creiteria
+    try {
+        $data = $model->select("mt_customer_email", [], $whereBuilder);
+    } catch (\Throwable $th) {
+        hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+    }
+
+    // if not found get by default createria
+    if (!isset($data) || count($data) == 0){
+        try {
+            $data = $model->select("mt_customer_email", [], "WHERE brand_id = '".$brandId."' AND flag = 'Y' ");
+        } catch (\Throwable $th) {
+            hasInternalError($th->getMessage() . " on line : " . $th->getLine());
+        }
+    }
+
+    hasSuccess("", $data);
+}
+
+function updateLastEmailId(){
+    date_default_timezone_set("Asia/Jakarta");
+
+    $lastEmailId = $_POST['last_email_id'];
+    $brandId     = $_POST['brand_id'];
+
+    $update = [
+        "last_email_id" => $lastEmailId,
+        "last_blast_time" => date("Y-m-d H:i:s")
+    ];
+
+    $whereUpdate = [
+        "id" => $brandId
+    ];
+
+    $model = new TransModel;
+    try {
+        $model->update("m_brand", $update, $whereUpdate, "Admin");
+    } catch (\Throwable $th) {
+        hasInternalError("[blast-api | updateLastEmailId] " . $th->getMessage() . " on line : " . $th->getLine());
+    }
+
+    hasSuccess("Berhasil menyimpan data email terakhir. ");
 }
