@@ -135,6 +135,7 @@
     var listemail       = [];
     var contentselected = {};
     var relays          = [];
+    var sentlength      = 0;
     var isBlast         = false;
     var isReady         = true;
 
@@ -365,6 +366,7 @@
     });
 
     function beginSend(){
+        sentlength = 0;
         const content   = contentselected;
         const subject   = !isBlast ? '\'[TEST]\' ' + content.subject : content.subject;
         
@@ -377,26 +379,26 @@
             // set email relay secara bergantian;
             if (inRelay < relayLength){
                 actionRelayId = relays[inRelay].relay_id;
-                sendEmail(item.id, item.email, content.id, subject, actionRelayId);
+                setTimeout(function() { sendEmail(item.id, item.email, content.id, subject, actionRelayId); }, 5000);
                 inRelay ++
             } else {
                 inRelay = 0;
                 actionRelayId = relays[inRelay].relay_id;
-                sendEmail(item.id, item.email, content.id, subject, actionRelayId);
+                setTimeout(function() { sendEmail(item.id, item.email, content.id, subject, actionRelayId); }, 5000);
             }
 
-            const num = i + 1;
-            if (num == listemail.length){
+            // const num = i + 1;
+            // if (num == listemail.length){
 
-                // jika pengiriman terakhir
-                if (isBlast){
-                    const last = listemail.length - 1;
-                    const lastEmail = listemail[last];
-                    updateLastEmailId(lastEmail.id);
-                }
+            //     // jika pengiriman terakhir
+            //     if (isBlast){
+            //         const last = listemail.length - 1;
+            //         const lastEmail = listemail[last];
+            //         updateLastEmailId(lastEmail.id);
+            //     }
 
-                $("#modal-loading").modal("hide");
-            }
+            //     $("#modal-loading").modal("hide");
+            // }
         });
     }
 
@@ -406,6 +408,16 @@
 
     function updateCustomerFailStatus(idemail){
         $("#status-"+idemail).html("Fail");
+    }
+
+    function updateSentLength(emailid){
+        sentlength++;
+        if(sentlength == listemail.length){
+            if (isBlast){
+                updateLastEmailId(emailid);                
+            }
+            $("#modal-loading").modal("hide");
+        }
     }
 
     function updateLastEmailId(lastEmailId){
@@ -443,6 +455,7 @@
                 } else {
                     updateCustomerFailStatus(idEmailUser);
                 }
+                updateSentLength(idEmailUser);
             }, error:function(er){
                 console.log(er);
                 updateCustomerFailStatus(idEmailUser);
