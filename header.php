@@ -1,15 +1,13 @@
 <?php 
-    include  "common-config.php";
-    $appname = "cosmosender";
-    $base    = "";
-
-    if ($__TYPE_PROJECT == "prod")
-        $base = "https://"; 
-    else
-        $base = "http://"; 
-
-    $baseurl = $base . $_SERVER['SERVER_NAME'] . "/" . $appname . "/";
-    // echo $baseurl;
+    include 'baseurl.php';
+    session_start();
+    if (!isset($_SESSION['islogin'])){
+        header("Location:".$baseurl."login.php");
+    } else {
+        if (!$_SESSION['islogin']){
+            header("Location:".$baseurl."login.php");
+        }
+    }
 ?>
 
 <!DOCTYPE html>

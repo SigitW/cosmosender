@@ -88,6 +88,8 @@ function saveAdd(){
         "password" => $_POST['password'],
         "port" => $_POST['port'],
         "host_id" => $_POST['host'],
+        "email_from" => $_POST['email_from'],
+        "email_alias" => $_POST['email_alias'],
         "flag" =>  "Y",
     ];
 
@@ -110,6 +112,8 @@ function update(){
     
     $objData->email = $_POST['email'];
     $objData->host_id = $_POST['host'];
+    $objData->email_from = $_POST['email_from'];
+    $objData->email_alias = $_POST['email_alias'];
     
     $data = (array) $objData;
     $arrId = ["id"=>$_POST['id']];

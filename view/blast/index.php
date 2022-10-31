@@ -128,6 +128,7 @@
     var brandId = '<?= $_GET['id'] ?>';
     $(document).ready(function(){
         load();
+        checkReady();
     });
 
     var objbrand        = {};
@@ -135,6 +136,7 @@
     var contentselected = {};
     var relays          = [];
     var isBlast         = false;
+    var isReady         = true;
 
     function load(){
         $.ajax({
@@ -153,6 +155,28 @@
                     loadRules(item.rules);
 
                     // console.log(objbrand);
+                }
+            }, error:function(er){
+                console.log(er);
+                $(".danger-search").fadeIn();
+                $(".danger-search").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+            }
+        })
+    }
+
+    function checkReady(){
+        $.ajax({
+            url:'<?= $baseurl ?>src/blast-api.php',
+            method:"POST",
+            data:{
+                do:"check-ready",
+                brand_id:brandId
+            }, success:function(res){
+                if (res.code == "200"){
+                   isReady = res.data;
+                   console.log(res.data);
+                } else {
+                   console.log(res);
                 }
             }, error:function(er){
                 console.log(er);
@@ -187,6 +211,8 @@
         // console.log(relays);
         // console.log("--------------------------------");
 
+        console.log(type);
+
         if (type == "test"){
             
             let str = '';
@@ -215,8 +241,13 @@
     }
 
     function loadCustomerBlast(){
+        if (!isReady){
+            $(".danger-search").fadeIn().delay(2000).fadeOut();
+            $(".danger-search").html("Belum Memenuhi Waktu Tunggu Setelah Waktu Blast Terakhir");
+            return false;
+        }
         $.ajax({
-            url:'<?= $baseurl ?>src/email-sync-api.php',
+            url:'<?= $baseurl ?>src/blast-api.php',
             method:"POST",
             data:{do:"load-by-brand", brand_id:objbrand.id},
             success:function(res){
@@ -331,11 +362,6 @@
                 beginSend();
             })
         }
-        
-        
-
-        // const isShow = checkModalShow(false);
-        // closeModalLoading();
     });
 
     function beginSend(){
@@ -347,6 +373,8 @@
         let actionRelayId = relays[0].relay_id;
 
         $.each(listemail, function(i, item){
+            
+            // set email relay secara bergantian;
             if (inRelay < relayLength){
                 actionRelayId = relays[inRelay].relay_id;
                 inRelay ++
@@ -356,8 +384,17 @@
             }
 
             sendEmail(item.id, item.email, content.id, subject, actionRelayId);
+
             const num = i + 1;
             if (num == listemail.length){
+
+                // jika pengiriman terakhir
+                if (isBlast){
+                    const last = listemail.length - 1;
+                    const lastEmail = listemail[last];
+                    updateLastEmailId(lastEmail.id);
+                }
+
                 $("#modal-loading").modal("hide");
             }
         });
@@ -369,6 +406,24 @@
 
     function updateCustomerFailStatus(idemail){
         $("#status-"+idemail).html("Fail");
+    }
+
+    function updateLastEmailId(lastEmailId){
+        $.ajax({
+            url:'<?= $baseurl ?>src/blast-api.php',
+            method:"POST",
+            data:{
+                do:"update-last-email",
+                brand_id:objbrand.id,
+                last_email_id:lastEmailId,
+            }, success:function(res){
+                console.log(res);
+            }, error:function(er){
+                console.log(er);
+                $(".danger-search").fadeIn();
+                $(".danger-search").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+            }
+        })
     }
 
     function sendEmail(idEmailUser, recipient, contentId, subject, relayid){

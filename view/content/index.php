@@ -459,7 +459,7 @@ if ($isId)
     }
 
     function showPreview(tgl, jam){
-        const pathPreview = + base + contentpath + tgl + "/" + jam + "/";
+        const pathPreview = base + contentpath + tgl + "/" + jam + "/";
         window.open(pathPreview);
     }
 

@@ -122,7 +122,7 @@ function loadContentById(){
 }
 
 function getContentBodyById($id){
-    include 'local-config.php';
+    include 'common/local-config.php';
     $data = $conn->query("SELECT body_content FROM t_content WHERE id = '".$id."'");
     $conn->close();
 
@@ -142,7 +142,7 @@ function updateContent(){
     $id         = $_POST['content_id'];
     $content    = $_POST['content'];
 
-    include 'local-config.php';
+    include 'common/local-config.php';
     try {
         $sql    = "UPDATE t_content SET body_content = '".$content."' WHERE id = '".$id."' ";
         $action = $conn->query($sql);

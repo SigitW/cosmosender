@@ -13,8 +13,10 @@
                 <tr>
                 <td>#</td>
                 <td>Nama</td>
-                <td>Newsletter Location</td>
-                <td>Service</td>
+                <td>Email</td>
+                <td>Port</td>
+                <td>Send as</td>
+                <td>Alias</td>
                 <td>Created Date</td>
                 <td>Created Who</td>
                 <td></td>
@@ -45,10 +47,12 @@
                 <input type="password" name="" id="password" class="form-control mb-3"> 
                 <label for="" class="mb-1"> Port</label>
                 <input type="number" name="" id="port" class="form-control mb-3"> 
+                <label for="" class="mb-1"> Email From</label>
+                <input type="text" name="" id="emailfrom" class="form-control mb-3"> 
+                <label for="" class="mb-1"> Email Alias</label>
+                <input type="text" name="" id="emailalias" class="form-control mb-3"> 
                 <label for="" class="mb-1"> Email Host</label>
-                <select name="" id="sel-host" class="form-control">
-
-                </select>
+                <select name="" id="sel-host" class="form-control"></select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-success" id="btn-save" onclick="store()"><i class="bi bi-check-lg"></i> Save</button>
@@ -78,6 +82,8 @@
                             '<td>'+item.email+'</td>'+
                             '<td>'+item.host_name+'</td>'+
                             '<td>'+item.port+ '</td>'+
+                            '<td>'+item.email_from+ '</td>'+
+                            '<td>'+item.email_alias+ '</td>'+
                             '<td>'+item.created_at+'</td>'+
                             '<td>'+item.created_who+'</td>'+
                             '<td><span class="btn-edit" onclick="showEdit(\''+item.id+'\')"><i class="bi bi-pencil-square"></i> Edit</span></td>'+
@@ -149,6 +155,8 @@
                     $("#id").val(item.id);
                     $("#email").val(item.email);
                     $("#pasword").val(item.password);
+                    $("#emailfrom").val(item.email_from);
+                    $("#emailalias").val(item.email_alias);
                     $("#port").val(item.port);
                     $("#sel-host").val(item.host_id);
                 }
@@ -164,6 +172,8 @@
         const email           = $("#email").val();
         const port            = $("#email").val();
         const password        = $("#password").val();
+        const emailfrom       = $("#emailfrom").val();
+        const emailalias      = $("#emailalias").val();
         const host            = $("#sel-host option:selected").val();
 
         $.ajax({
@@ -175,7 +185,9 @@
                 email : email,
                 port : port,
                 password : password,
-                host : host
+                host : host,
+                email_from : emailfrom,
+                email_alias : emailalias
             }, success : function(res){
                 if (res.code == "200"){
                     $("#modal-add").modal("hide");
@@ -195,6 +207,8 @@
         const password    = $("#password").val();
         const port        = $("#port").val();
         const host        = $("#sel-host option:selected").val();
+        const emailfrom   = $("#emailfrom").val();
+        const emailalias  = $("#emailalias").val();
 
         $.ajax({
             url : '<?= $baseurl ?>src/email-relay-api.php',
@@ -204,7 +218,9 @@
                 email : email,
                 password : password,
                 port : port,
-                host : host
+                host : host,
+                email_from : emailfrom,
+                email_alias : emailalias
             }, success : function(res){
                 if (res.code == "200"){
                     $("#modal-add").modal("hide");
