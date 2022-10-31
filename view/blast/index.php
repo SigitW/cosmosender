@@ -377,13 +377,13 @@
             // set email relay secara bergantian;
             if (inRelay < relayLength){
                 actionRelayId = relays[inRelay].relay_id;
+                sendEmail(item.id, item.email, content.id, subject, actionRelayId);
                 inRelay ++
             } else {
                 inRelay = 0;
                 actionRelayId = relays[inRelay].relay_id;
+                sendEmail(item.id, item.email, content.id, subject, actionRelayId);
             }
-
-            sendEmail(item.id, item.email, content.id, subject, actionRelayId);
 
             const num = i + 1;
             if (num == listemail.length){
