@@ -29,14 +29,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="<?= $baseurl; ?>asset/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= $baseurl; ?>asset/icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="<?= $baseurl; ?>asset/style.css">
 </head>
-<body class="container">
-    <div class="row">
-        <div class="col-md-6 col-xs-0">
+<body class="container-fluid" style="background-image: url('<?= $baseurl ?>asset/login-img-2.jpg');background-size: cover;margin-top:-100px;background-position:center;">
+    <div class="row" style="max-height:100%;">
+        <div class="col-md-6 col-xs-0" >
 
         </div>
-        <div class="col-md-6 col-xs-12">
+        <div class="col-md-6 col-xs-12" style="padding: 30px;background-color: #4d4b48;height:100vh;">
             <div style="border-bottom: solid 5px teal;font-size:30px;padding-bottom:10px;" class="mb-3">
             Indraco Mail Sender <br/>& Content Management
             </div>
@@ -46,10 +47,12 @@
                 <input type="text" name="name" id="name" class="form-control mb-3">
                 <label for="" class="mb-2">Password</label>
                 <input type="password" name="pass" id="pass" class="form-control mb-3">
+                <div class="float-end">
+                    <button class="btn btn-sm btn-light" id="btn-login"><i class="bi bi-arrow-right-short"></i> Login</button>
+                </div>
             </form>
-         
-            <div class="text-end">
-                <button class="btn btn-sm btn-light" id="btn-login"><i class="bi bi-arrow-right"></i> Login</button>
+            <div class="align-bottom">
+                v.1.2
             </div>
         </div>
     </div>
@@ -68,16 +71,16 @@
         }
     });
 
-    $("#btn-login").on("click", function(){
+    // $("#btn-login").on("click", function(){
         
-        const name = $("#name").val();
-        const pass = $("#pass").val();
+    //     const name = $("#name").val();
+    //     const pass = $("#pass").val();
 
-        if (name == "" || pass == ""){
-            $(".alert-danger").fadeIn().delay(2000).fadeOut();
-            $(".alert-danger").html("Tolong lengkapi data login");
-        }
+    //     if (name == "" || pass == ""){
+    //         $(".alert-danger").fadeIn().delay(2000).fadeOut();
+    //         $(".alert-danger").html("Tolong lengkapi data login");
+    //     }
 
-        $("#form-login").submit();
-    });
+    //     $("#form-login").submit();
+    // });
 </script>

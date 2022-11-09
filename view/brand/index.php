@@ -49,7 +49,7 @@
                 <input type="text" name="" id="actual_path" class="form-control mb-3"> 
                 <label for="" class="mb-1"> Blast Limit</label>
                 <input type="number" name="" id="blast_limit" class="form-control mb-3"> 
-                <label for="" class="mb-1"> Blast Hour Interval</label>
+                <label for="" class="mb-1"> Blast Minute Interval</label>
                 <input type="number" name="" id="blast_hour_interval" class="form-control mb-3"> 
                 <label for="" class="mb-1"> Newsletter Folder</label>
                 <input type="text" name="" id="aseet_namespace" class="form-control mb-3"> 
@@ -156,8 +156,8 @@
                     $("#blast_hour_interval").val(item.blast_hour_interval);
                 }
             }, error:function(err){
-                $(".alert-warning").fadeIn();
-                $(".alert-warning").html(er.responseText);
+                $(".alert-warning").fadeIn().delay(2000).fadeOut();
+                $(".alert-warning").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
             }
         })
     }
@@ -188,13 +188,13 @@
             }, success : function(res){
                 if (res.code == "200"){
                     $("#modal-add").modal("hide");
-                    $(".alert-success").fadeIn();
+                    $(".alert-success").fadeIn().delay(2000).fadeOut();
                     $(".alert-success").html(res.message);
                     load();
                 }
             }, error : function(er){
-                $(".alert-warning").fadeIn();
-                $(".alert-warning").html(er.responseText);
+                $(".alert-warning").fadeIn().delay(2000).fadeOut();
+                $(".alert-warning").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
             }
         })
     }
@@ -227,13 +227,13 @@
             }, success : function(res){
                 if (res.code == "200"){
                     $("#modal-add").modal("hide");
-                    $(".alert-success").fadeIn();
+                    $(".alert-success").fadeIn().delay(2000).fadeOut();
                     $(".alert-success").html(res.message);
                     load();
                 }
             }, error : function(er){
                 console.log(er);
-                $(".alert-warning").fadeIn();
+                $(".alert-warning").fadeIn().delay(2000).fadeOut();
                 $(".alert-warning").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
             }
         })

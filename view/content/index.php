@@ -111,27 +111,30 @@ if ($isId)
                 <button type="button" class="btn-close" id="btn-close-edit-content" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="alert alert-warning warning-edit-content display-none mb-3"></div>
-                <div class="alert alert-success success-edit-content display-none mb-3"></div>
                 <input type="hidden" name="" id="c-date"/>
                 <input type="hidden" name="" id="c-time"/>
                 <input type="hidden" name="content_id" id="id-content"/>
+                <div class="alert alert-warning warning-edit-content display-none mb-3"></div>
+                <div class="alert alert-success success-edit-content display-none mb-3"></div>
                 <div class="row">
-                    <div class="col-md-4 col-xs-12" style="margin-bottom:20px;">
-                        <div>
-                            <div id="content-brand" style="font-size: 20px;font-weight:bold">
+                    <div class="col-md-4 col-xs-12" style="margin-bottom:20px;" id="panel-left">
+                        <span class="float-end btn-edit" id="sempitkan" onclick="sempitkan()"><i class="bi bi-chevron-left"></i></span>
+                        <span class="float-end btn-edit" id="lebarkan" onclick="lebarkan()">Asset <i class="bi bi-chevron-right"></i></span>
+                        <div id="isi-panel-left">
+                            <div>
+                                <div id="content-brand" style="font-size: 20px;font-weight:bold"></div>
+                                <div id="content-tanggal" style="font-size: 12px;" class="mb-3"> - </div>
+                                <div id="content-materi"> - </div>
                             </div>
-                            <div id="content-tanggal" style="font-size: 12px;" class="mb-3"> - </div>
-                            <div id="content-materi"> - </div>
+                            <hr/>    
+                            <span style="color:gray;font-size: 12px;">* klik url dibawah asset untuk meng-copy url asset tersebut</span>
+                            <div class="mt-1" style="width:100%;height:335px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel"></div>
                         </div>
-                        <hr/>    
-                        <span style="color:gray;font-size: 12px;">* klik url dibawah asset untuk meng-copy url asset tersebut</span>
-                        <div class="mt-1" style="width:100%;height:500px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel"></div>
                     </div>
-                    <div class="col-md-8 col-xs-12">
+                    <div class="col-md-8 col-xs-12" id="panel-right">
                         <textarea name="" id="content-editor" style="width:100%;"></textarea>
                     </div>
-              </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-success" id="btn-save-content"><i class="bi bi-check-lg"></i> Save</button>
@@ -179,7 +182,7 @@ if ($isId)
                     matchBrackets: true,
                     theme:"dracula",
                 });    
-    editor.setSize(null, 800);
+    editor.setSize(null, 470);
 
     var foundId = '<?= $isId ?>';
     $(document).ready(function(){
@@ -190,6 +193,22 @@ if ($isId)
         loadContent();
         loadBrand();
     });
+
+    function sempitkan(){
+        $("#panel-left").attr("class", "col-md-1 col-xs-12");
+        $("#panel-right").attr("class", "col-md-11 col-xs-12");
+        $("#isi-panel-left").hide("fast");
+        $("#lebarkan").show();
+        $("#sempitkan").hide();
+    }
+
+    function lebarkan(){
+        $("#panel-left").attr("class", "col-md-4 col-xs-12");
+        $("#panel-right").attr("class", "col-md-8 col-xs-12");
+        $("#isi-panel-left").show("fast");
+        $("#sempitkan").show();
+        $("#lebarkan").hide();
+    }
 
     function callError(data){
         $(".alert-danger").show();
@@ -328,6 +347,9 @@ if ($isId)
     }
 
     function showContentById(id, materi, tanggal, jam){
+
+        lebarkan();
+
         $("#modal-edit-content").modal('show');
         $("#asset-panel").html("")
         $("#id-content").val(id);
@@ -408,7 +430,7 @@ if ($isId)
             },
             error: function(er){
                 console.log(er);
-                $(".warning-edit-content").fadeIn();
+                $(".warning-edit-content").fadeIn().delay(2000).fadeOut();
                 $(".warning-edit-content").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
             }
         });
@@ -433,7 +455,7 @@ if ($isId)
                 }
             }, error:function(er){
                 console.log(er);
-                $(".warning-edit-content").fadeIn();
+                $(".warning-edit-content").fadeIn().delay(2000).fadeOut();
                 $(".warning-edit-content").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
             }
         })

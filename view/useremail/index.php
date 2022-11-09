@@ -346,11 +346,15 @@
                     '<td colspan="4">List Customer Email</td>'+
                   '</tr>';
         $.each(listEmail, function(i, item){
+
+            const labelFlag = item.flag == "Y" ? "Subscribed" : "Unsubscribed";
+
             str += '<tr>'+
                         '<td>'+item.num+'</td>'+
                         '<td>'+item.email+'</td>'+
                         '<td>'+item.nama+'</td>'+
                         '<td>'+item.created_at+'</td>'+
+                        '<td>'+ labelFlag +'</td>'+
                     '</tr>';
         });
         $("#body-table").html(str);

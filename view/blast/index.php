@@ -58,7 +58,7 @@
             </table>
         </div>
     </div>
-    <div class="text-end">
+    <div class="text-end mb-3">
         <button class="btn btn-sm btn-success" id="btn-blast"><i class="bi bi-send-fill"></i> Blast</button>
     </div>
 </body>
@@ -242,6 +242,7 @@
     }
 
     function loadCustomerBlast(){
+        checkReady();
         if (!isReady){
             $(".danger-search").fadeIn().delay(2000).fadeOut();
             $(".danger-search").html("Belum Memenuhi Waktu Tunggu Setelah Waktu Blast Terakhir");
@@ -336,22 +337,28 @@
         $("#table-body").html("");
     }
 
-    $("#btn-blast").click(function(){
+    $("#btn-blast").click(function() {    
         // console.log(contentselected);
-
-        if (confirm("Apakah Anda Akan Melakukan Blast ?")){
-            
+        if (confirm("Apakah Anda Akan Melakukan Blast ?"))
+        {    
             if (relays.length == 0){
                 $(".danger-search").html("Tidak ditemukan pengaturan relay pada rules ini. buka menu blast rules untuk konfigurasi");
                 $(".danger-search").fadeIn().delay(2000).fadeOut();
                 return false;
             }    
 
-            console.log(contentselected == "");
-            if (contentselected == {}){
-                console.log("----------");
-                console.log(contentselected);
+            if (listemail.length == 0){
+                $(".danger-search").html("Tidak ditemukan daftar email penerima");
+                $(".danger-search").fadeIn().delay(2000).fadeOut();
+                return false;
             }
+               
+
+            // console.log(contentselected == "");
+            // if (contentselected == {}){
+            //     console.log("----------");
+            //     console.log(contentselected);
+            // }
             if (jQuery.isEmptyObject(contentselected)){
                 $(".danger-search").html("Tidak Content yang Dipilih !");
                 $(".danger-search").fadeIn().delay(2000).fadeOut();
@@ -365,7 +372,7 @@
         }
     });
 
-    function beginSend(){
+    function beginSend() {
         sentlength = 0;
         const content   = contentselected;
         const subject   = !isBlast ? '\'[TEST]\' ' + content.subject : content.subject;
@@ -373,9 +380,10 @@
         let inRelay = 0;
         const relayLength = relays.length;
         let actionRelayId = relays[0].relay_id;
+        const nilaiMod = 5;
 
         $.each(listemail, function(i, item){
-            
+
             // set email relay secara bergantian;
             if (inRelay < relayLength){
                 actionRelayId = relays[inRelay].relay_id;
@@ -383,22 +391,8 @@
                 inRelay ++
             } else {
                 inRelay = 0;
-                actionRelayId = relays[inRelay].relay_id;
                 setTimeout(function() { sendEmail(item.id, item.email, content.id, subject, actionRelayId); }, 5000);
-            }
-
-            // const num = i + 1;
-            // if (num == listemail.length){
-
-            //     // jika pengiriman terakhir
-            //     if (isBlast){
-            //         const last = listemail.length - 1;
-            //         const lastEmail = listemail[last];
-            //         updateLastEmailId(lastEmail.id);
-            //     }
-
-            //     $("#modal-loading").modal("hide");
-            // }
+            }            
         });
     }
 
@@ -413,10 +407,18 @@
     function updateSentLength(emailid){
         sentlength++;
         if(sentlength == listemail.length){
+            // jika semua sudah terkirim
             if (isBlast){
                 updateLastEmailId(emailid);                
             }
+            
             $("#modal-loading").modal("hide");
+            $("#btn-blast").attr("disabled", "true");
+            // end 
+            
+            // check status blast untuk yg berlimit
+            checkReady();
+            // end 
         }
     }
 
@@ -429,7 +431,7 @@
                 brand_id:objbrand.id,
                 last_email_id:lastEmailId,
             }, success:function(res){
-                console.log(res);
+                // console.log(res);
             }, error:function(er){
                 console.log(er);
                 $(".danger-search").fadeIn();
@@ -455,6 +457,7 @@
                 } else {
                     updateCustomerFailStatus(idEmailUser);
                 }
+                // console.log(res.message);
                 updateSentLength(idEmailUser);
             }, error:function(er){
                 console.log(er);
