@@ -1,6 +1,9 @@
 <?php include 'header.php' ?>
 <?php include 'navbar.php' ?>
 <body class="container">
+    <div style="font-size: 12px;" class="mb-3">
+        * klik masing - masing panel brand untuk melakukan editing content management & melakukan blast
+    </div>
     <div id="panel-card-brand"></div> 
 </body>
 <?php include 'footer.php' ?>
