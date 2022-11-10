@@ -28,6 +28,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="<?= $baseurl; ?>asset/faveicon.ico">
     <link rel="stylesheet" href="<?= $baseurl; ?>asset/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= $baseurl; ?>asset/icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="<?= $baseurl; ?>asset/style.css">
@@ -38,8 +39,9 @@
 
         </div>
         <div class="col-md-6 col-xs-12" style="padding: 30px;background-color: #4d4b48;height:100vh;">
+            <img src="<?= $baseurl; ?>asset/logo-light.png" alt="" class="mb-3" style="width: inherit;" />
             <div style="border-bottom: solid 5px teal;font-size:30px;padding-bottom:10px;" class="mb-3">
-            Indraco Mail Sender <br/>& Content Management
+            Mail Sender & Content Management
             </div>
             <div class="alert alert-danger display-none mb-3"><?= $msg; ?></div>
             <form action="src/test-auth.php" method="POST" id="form-login">

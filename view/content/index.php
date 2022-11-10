@@ -220,6 +220,7 @@ if ($isId)
     })
 
     var base        = '<?= $base; ?>';
+    var base        = 'https://';
     var objBrand    = {};
     var apipath     = "";
     var contentpath = "";
