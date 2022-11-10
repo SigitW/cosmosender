@@ -46,7 +46,7 @@ function checkReadyToBlast(){
         $interval = $brand['blast_hour_interval'];
         if ($interval > 0){
             $selisih = getSelisihMenit($brand['last_blast_time']);
-            $isOk = $selisih > $interval;
+            $isOk = $selisih >= $interval;
         } 
     }
 
@@ -127,7 +127,6 @@ function blastTest(){
         hasInternalError("Email Relay Tidak ditemukan");       
 
     try {
-        // $mail = new PHPMailer\PHPMailer\PHPMailer();
         $mail = new PHPMailer();
         $mail->isSMTP();
         $mail->Host     = $host['host'];
@@ -138,13 +137,13 @@ function blastTest(){
         $mail->Port       = $relay['port'];
         $mail->setFrom($relay['email_from'], $brand['email_alias']);
         $mail->addAddress($recipient, '');
-        $mail->CharSet = "UTF-8";
+        $mail->CharSet    = "UTF-8";
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body    = $content['body_content'];
         $mail->AltBody = 'Sorry, cannot show this page. Your email client is not supported a HTML format';
         $mail->send();    
-        hasSuccess("Berhasil Mengirim Email");    
+        hasSuccess("Berhasil Mengirim Email ke ".$recipient);    
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
@@ -160,7 +159,7 @@ function loadCustByBrand(){
     $lastEmailId    = $brand['last_email_id'];
     $emailLimit     = $brand['blast_limit'];
     $hasLastEmailId = isset($lastEmailId) && $lastEmailId != "";
-    $hasLimit       = isset($emailLimit) && $emailLimit != "";
+    $hasLimit       = isset($emailLimit) && $emailLimit != "" && $emailLimit != 0;
     $whereBuilder   = "WHERE brand_id = '".$brandId."' AND flag = 'Y' ";
 
     if ($hasLastEmailId){
@@ -168,8 +167,9 @@ function loadCustByBrand(){
     }
     
     $whereBuilder .= "ORDER BY id ";
-
+    $whereBuilderDefault = "ORDER BY id ";
     if ($hasLimit){
+        $whereBuilderDefault = "LIMIT ".$emailLimit." ";
         $whereBuilder .= "LIMIT ".$emailLimit." ";
     }
 
@@ -183,7 +183,7 @@ function loadCustByBrand(){
     // if not found get by default createria
     if (!isset($data) || count($data) == 0){
         try {
-            $data = $model->select("mt_customer_email", [], "WHERE brand_id = '".$brandId."' AND flag = 'Y' ");
+            $data = $model->select("mt_customer_email", [], "WHERE brand_id = '" . $brandId . "' AND flag = 'Y' " . $whereBuilderDefault);
         } catch (\Throwable $th) {
             hasInternalError($th->getMessage() . " on line : " . $th->getLine());
         }
