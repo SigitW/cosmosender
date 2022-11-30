@@ -10,6 +10,7 @@ require_once("response.php");
 require("PHPMailer/PHPMailer.php");
 require('PHPMailer/SMTP.php');
 require('PHPMailer/Exception.php');
+date_default_timezone_set("Asia/Jakarta");
 
 doBlast();
 function doBlast() : void {
