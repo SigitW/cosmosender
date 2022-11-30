@@ -475,6 +475,24 @@
         
         const subject = !isBlast ? '\'[TEST]\' ' + contentselected.subject : contentselected.subject;
 
+        if (relays.length == 0){
+            $(".danger-search").html("Tidak ditemukan pengaturan relay pada rules ini. buka menu blast rules untuk konfigurasi");
+            $(".danger-search").fadeIn().delay(2000).fadeOut();
+            return false;
+        }    
+
+        if (listemail.length == 0){
+            $(".danger-search").html("Tidak ditemukan daftar email penerima");
+            $(".danger-search").fadeIn().delay(2000).fadeOut();
+            return false;
+        }
+            
+        if (jQuery.isEmptyObject(contentselected)){
+            $(".danger-search").html("Tidak Content yang Dipilih !");
+            $(".danger-search").fadeIn().delay(2000).fadeOut();
+            return false;
+        }
+
         $("#form-json-relay").val(JSON.stringify(relays));
         $("#form-json-recip").val(JSON.stringify(listemail));
         $("#form-brand-id").val(brandId);
@@ -482,8 +500,9 @@
         $("#form-content-subject").val(subject);
 
         if (confirm("Apakah Anda Akan Melakukan Blast ?")){
-            console.log($("#form-json-relay").val());
-            console.log($("#form-json-recip").val());
+            $("#modal-loading").modal("show");
+            // console.log($("#form-json-relay").val());
+            // console.log($("#form-json-recip").val());
             $("#form-blast").submit();
         }
     });
