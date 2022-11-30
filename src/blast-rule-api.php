@@ -167,7 +167,7 @@ function loadHostById($id) : array {
 
 function loadBlastRuleRelayByRuleId($id) : array {
     $model  = new TransModel;
-    $select = ["id", "relay_id"];
+    $select = ["id as rules_id", "relay_id"];
     $where  = "WHERE rule_id = '".$id."' AND flag='Y'";
     $data   = [];
     try {
@@ -188,6 +188,7 @@ function loadBlastRuleRelayByRuleId($id) : array {
             $data[$i]['port']           = count($relays) == 0 ? "-" : $relays[0]['port'];
             $data[$i]['password']       = count($relays) == 0 ? "-" : $relays[0]['password'];
             $data[$i]['email_alias']    = count($relays) == 0 ? "-" : $relays[0]['email_alias'];
+            $data[$i]['email_from']     = count($relays) == 0 ? "-" : $relays[0]['email_from'];
         }
     }
     return $data;
@@ -195,7 +196,7 @@ function loadBlastRuleRelayByRuleId($id) : array {
 
 function loadRelayByDetailId($id) : array {
     $model  = new TransModel;
-    $select = ["id", "email", "host_id", "port", "password", "email_alias"];
+    $select = ["id", "email", "host_id", "port", "password", "email_alias", "email_from"];
     $where  = "WHERE id = '".$id."'";
     $data   = [];
     try {

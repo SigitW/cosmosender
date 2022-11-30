@@ -58,8 +58,19 @@
             </table>
         </div>
     </div>
+
+    <form action="<?= $baseurl ?>src/blast.php" id="form-blast" method="POST" enctype="multipart/form-data" />
+        <input type="hidden" name="content_id" id="form-content-id"/>
+        <input type="hidden" name="content_subject" id="form-content-subject"/>
+        <input type="hidden" name="brand_id" id="form-brand-id"/>
+        <input type="hidden" name="json_recipients" id="form-json-recip"/>
+        <input type="hidden" name="json_relays" id="form-json-relay"/>
+    </form>
+
     <div class="text-end mb-3">
-        <button class="btn btn-sm btn-success" id="btn-blast"><i class="bi bi-send-fill"></i> Blast</button>
+        <button class="btn btn-sm btn-success" id="btn-blast-form"><i class="bi bi-send-fill"></i> Blast With Form</button>
+
+        <!-- <button class="btn btn-sm btn-success" id="btn-blast"><i class="bi bi-send-fill"></i> Blast</button> -->
     </div>
 </body>
 
@@ -155,7 +166,7 @@
                     $("#brand-name").html(item.name);    
                     loadRules(item.rules);
 
-                    // console.log(objbrand);
+                    console.log(objbrand);
                 }
             }, error:function(er){
                 console.log(er);
@@ -201,6 +212,8 @@
 
     function listRecipient(id, name, type){
 
+        console.log("recipients loaded");
+
         isBlast = type == "blast";
         $("#title-test").html(name);
         listemail = [];
@@ -208,11 +221,7 @@
         const rules = objbrand.rules.filter(p=>p.id === id);
         relays = rules[0].details;
   
-        // console.log("----------------------- relay : ");
-        // console.log(relays);
-        // console.log("--------------------------------");
-
-        console.log(type);
+        // console.log(type);
 
         if (type == "test"){
             
@@ -242,6 +251,7 @@
     }
 
     function loadCustomerBlast(){
+        console.log(relays);
         checkReady();
         if (!isReady){
             $(".danger-search").fadeIn().delay(2000).fadeOut();
@@ -353,12 +363,6 @@
                 return false;
             }
                
-
-            // console.log(contentselected == "");
-            // if (contentselected == {}){
-            //     console.log("----------");
-            //     console.log(contentselected);
-            // }
             if (jQuery.isEmptyObject(contentselected)){
                 $(".danger-search").html("Tidak Content yang Dipilih !");
                 $(".danger-search").fadeIn().delay(2000).fadeOut();
@@ -373,14 +377,13 @@
     });
 
     function beginSend() {
-        sentlength = 0;
+        sentlength      = 0;
         const content   = contentselected;
         const subject   = !isBlast ? '\'[TEST]\' ' + content.subject : content.subject;
         
-        let inRelay = 0;
+        let inRelay       = 0;
         const relayLength = relays.length;
         let actionRelayId = relays[0].relay_id;
-        const nilaiMod = 5;
 
         $.each(listemail, function(i, item){
 
@@ -391,6 +394,7 @@
                 inRelay ++
             } else {
                 inRelay = 0;
+                actionRelayId = relays[inRelay].relay_id;
                 setTimeout(function() { sendEmail(item.id, item.email, content.id, subject, actionRelayId); }, 5000);
             }            
         });
@@ -465,5 +469,23 @@
             }
         })
     }
+
+    $("#btn-blast-form").on("click", function(){
+        console.log("isikan data ke form ...");
+        
+        const subject = !isBlast ? '\'[TEST]\' ' + contentselected.subject : contentselected.subject;
+
+        $("#form-json-relay").val(JSON.stringify(relays));
+        $("#form-json-recip").val(JSON.stringify(listemail));
+        $("#form-brand-id").val(brandId);
+        $("#form-content-id").val(contentselected.id);
+        $("#form-content-subject").val(subject);
+
+        if (confirm("Apakah Anda Akan Melakukan Blast ?")){
+            console.log($("#form-json-relay").val());
+            console.log($("#form-json-recip").val());
+            $("#form-blast").submit();
+        }
+    });
 
 </script>
