@@ -1,4 +1,5 @@
 # cosmosender
+## v1.2.2-beta
 aplikasi manajemen content dan customer base email sender. untuk menjalankan aplikasi ini : 
 - masuk ke folder project
 - clone basemodel dari https://github.com/SigitW/basemodel
