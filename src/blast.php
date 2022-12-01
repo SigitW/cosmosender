@@ -186,7 +186,7 @@ function sendBlast($email = []) : void {
 function updateLastId($brandid = "", $lastuserid = "") : void {
     $model = new TransModel;
     try {
-        $model->update("m_brand", ["last_email_id" => $lastuserid], ["id" => $brandid], "Admin");
+        $model->update("m_brand", ["last_email_id" => $lastuserid, "last_blast_time" => date('Y-m-d H:i:s')], ["id" => $brandid], "Admin");
     } catch (\Throwable $th) {
         new Exception($th->getMessage(), 1);
     }
