@@ -90,7 +90,7 @@
                                 <td>#</td>
                                 <td>Materi</td>
                                 <td>Subject</td>
-                                <td>Date</td>
+                                <td style="width: 120px;">Date</td>
                                 <td>Time</td>
                                 <td></td>
                             </tr>
@@ -247,7 +247,6 @@
             // jika blast menampilkan customer email
             loadCustomerBlast();
         }
-        // console.log(listemail);
     }
 
     function loadCustomerBlast(){
@@ -311,8 +310,8 @@
                                 '<td>' + num + '</td>'+
                                 '<td>' + replaceNull(item.materi_name) + '</td>'+
                                 '<td>' + replaceNull(item.subject) + '</td>'+
-                                '<td>' + item.date_namespace + '</td>'+
-                                '<td>' + item.time_namespace + '</td>'+
+                                '<td>' + parseDateNamespace(item.date_namespace) + '</td>'+
+                                '<td>' + parseTimeNamespace(item.time_namespace) + '</td>'+
                                 '<td><span class="btn-edit" onclick="pilihContent(\''+item.id+'\',\''+item.materi_name+'\', \''+item.subject+'\', \''+item.date_namespace+'\', \''+item.time_namespace+'\')"><i class="bi bi-check"></i> Pilih</span></td>'+
                                 '</tr>'
                     });
@@ -326,13 +325,27 @@
         })
     }
 
+
+    function parseDateNamespace(strDate){
+        const getYear = strDate.substring(0,2);
+        const getMonth = strDate.substring(2,4);
+        const getDate = strDate.substring(4,6);
+        return "20"+getYear+"-"+getMonth+"-"+getDate;
+    }
+
+    function parseTimeNamespace(strTime){
+        const getHour = strTime.substring(0,2);
+        const getMinute = strTime.substring(2,4);
+        return getHour+":"+getMinute;
+    }
+
     function pilihContent(id, materi, subject, tgl, hour){
         contentselected = {id:id, materi:replaceNull(materi), subject:replaceNull(subject), tgl:tgl, hour:hour};
         str = '<tr>'+
             '<td>'+ replaceNull(materi) +'</td>'+
             '<td>'+ replaceNull(subject) +'</td>'+
-            '<td>'+ tgl +'</td>'+
-            '<td>'+ hour +'</td>'+
+            '<td>'+ parseDateNamespace(tgl) +'</td>'+
+            '<td>'+ parseTimeNamespace(hour) +'</td>'+
             '</tr>';
         $("#table-body-content").html(str);
         $("#modal-add-content").modal('hide');

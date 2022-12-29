@@ -6,11 +6,14 @@ body {
 
 thead {
     border-top: solid 3px teal;
-    border-bottom: solid 3px teal;
+    color: darkgrey;
+    font-weight: bold;
+    font-size: large;
+    border-bottom: solid 3px rgba(128, 128, 128, .3);
 }
 
 input {
-    background-color: rgba(128, 128, 128, .3) !important;
+    background-color: rgba(47, 2, 2, 0.3) !important;
     border: none !important;
     border-bottom: solid 3px gray !important;
     color: white !important;
@@ -186,4 +189,20 @@ select option {
 .CodeMirror {
     font-family: Arial, monospace;
     font-size: 14px;
+}
+
+.title{
+    font-size: 30px;
+    font-weight: bold;
+    /* color: black; */
+}
+
+.first-letter{
+    background-color: lightgray;
+    font-size: 40px;
+    width: 60px;
+    height: 60px;
+    border-radius: 100px;
+    display: inline-block;
+    margin-right: 20px;
 }

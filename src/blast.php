@@ -3,6 +3,7 @@
     
 <?php
 
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 require_once("../basemodel/TransModel.php");
@@ -84,9 +85,6 @@ function doBlast() : void {
     $hasLimit   = $brand['blast_limit'] > 0;
     //end
 
-    // echo '<br>============ Jumlah Email Target : '.$jumlahRecipients.' ==============<br>';
-    // echo '============ Jumlah Email Relay  : '.$jumlahRelay.' ==============<br><br>';
-
 ?>
 <h3 class="mb-2"><?= $brand['name']; ?></h3>
 <p><?= $contentSubject ?></p>
@@ -129,7 +127,7 @@ function doBlast() : void {
             sendBlast($data);
 
             if ($inRelay == $jumlahRelay - 1){
-                sleep(5);
+                sleep(2);
                 // echo '<br><br>============ Delay 5 Detik: ==============<br><br>';
                 $inRelay = 0;
             } else  {
@@ -159,10 +157,10 @@ function sendBlast($email = []) : void {
     try {
         $mail = new PHPMailer();
         $mail->isSMTP();
-        $mail->Host     = $email['host'];
-        $mail->SMTPAuth = true;
-        $mail->Username = $email['email'];
-        $mail->Password = $email['password'];
+        $mail->Host      = $email['host'];
+        $mail->SMTPAuth  = true;
+        $mail->Username  = $email['email'];
+        $mail->Password  = $email['password'];
         $mail->SMTPSecure = 'ssl';
         $mail->Port       = $email['port'];
         $mail->setFrom($email['email_from'], $email['email_alias']);
@@ -172,10 +170,9 @@ function sendBlast($email = []) : void {
         $mail->Subject = $email['subject'];
         $mail->Body    = $email['body_content'];
         $mail->AltBody = 'Sorry, cannot show this page. Your email client is not supported a HTML format';
-        $mail->send();      
-        
-        echo '<td>Success</td>';
-    } catch (\PHPMailer\PHPMailer\Exception $th) {
+        // $mail->send();         
+        echo '<td>Success</td>';     
+    } catch (Exception $th) {
         echo '<td>'.$th->errorMessage().'</td>';
     } catch(\Throwable $th){
         echo '<td>'.$th->getMessage().'</td>';

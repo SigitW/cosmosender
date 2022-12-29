@@ -18,7 +18,7 @@ if ($isId)
         <button class="btn btn-sm btn-light" id="btn-add"><i class="bi bi-plus-lg"></i> Add</button>
     </div>
     <div class="over-x">
-        <table class="table table-dark table-striped table-hover text-nowrap">
+        <table class="table table-dark table-striped table-hover text-nowrap table-bordered">
             <thead>
                 <tr>
                 <td>#</td>
@@ -265,10 +265,10 @@ if ($isId)
                         const num = 1 + i;
                         str += '<tr>'+
                             '<td>'+num+'</td>'+
-                            '<td width="500px;">'+ replaceNull(item.materi_name)+'</td>'+
-                            '<td>'+ replaceNull(item.subject)+'</td>'+
-                            '<td>'+item.date_namespace+'</td>'+
-                            '<td>'+item.time_namespace+'</td>'+
+                            '<td width="500px;">'+ replaceNull(item.materi_name) +'</td>'+
+                            '<td>'+ replaceNull(item.subject) +'</td>'+
+                            '<td>'+ parseDateNamespace(item.date_namespace) +'</td>'+
+                            '<td>'+ parseTimeNamespace(item.time_namespace) +'</td>'+
                             '<td>'+
                             '<div class="btn-edit d-inline ms-4 me-4" onclick="showEdit(\''+item.id+'\',\''+item.materi_name+'\', \''+item.subject+'\')"><i class="bi bi-pencil-square"></i> Edit</div>'+
                             '<div class="btn-edit d-inline me-4" onclick="showUpload(\''+item.id+'\', \''+item.materi_name+'\',\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-upload"></i> Upload Asset</div>'+
@@ -284,6 +284,19 @@ if ($isId)
                 console.log(e);
             }
         })
+    }
+
+    function parseDateNamespace(strDate){
+        const getYear = strDate.substring(0,2);
+        const getMonth = strDate.substring(2,4);
+        const getDate = strDate.substring(4,6);
+        return "20"+getYear+"-"+getMonth+"-"+getDate;
+    }
+
+    function parseTimeNamespace(strTime){
+        const getHour = strTime.substring(0,2);
+        const getMinute = strTime.substring(2,4);
+        return getHour+":"+getMinute;
     }
 
     function showUpload(id, materi, tgl, jam){
