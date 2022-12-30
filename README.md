@@ -1,5 +1,11 @@
 # cosmosender
+## v1.2.5-beta
+- perbaikan informasi form dan perapihan tampilan
+
 ## v1.2.2-beta
+- perbaikan metode blast dari js ke post php
+
+
 aplikasi manajemen content dan customer base email sender. untuk menjalankan aplikasi ini : 
 - masuk ke folder project
 - clone basemodel dari https://github.com/SigitW/basemodel
