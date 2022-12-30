@@ -127,7 +127,7 @@ function doBlast() : void {
             sendBlast($data);
 
             if ($inRelay == $jumlahRelay - 1){
-                sleep(2);
+                sleep(5);
                 // echo '<br><br>============ Delay 5 Detik: ==============<br><br>';
                 $inRelay = 0;
             } else  {
@@ -170,7 +170,7 @@ function sendBlast($email = []) : void {
         $mail->Subject = $email['subject'];
         $mail->Body    = $email['body_content'];
         $mail->AltBody = 'Sorry, cannot show this page. Your email client is not supported a HTML format';
-        // $mail->send();         
+        $mail->send();         
         echo '<td>Success</td>';     
     } catch (Exception $th) {
         echo '<td>'.$th->errorMessage().'</td>';

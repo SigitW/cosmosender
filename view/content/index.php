@@ -121,14 +121,25 @@ if ($isId)
                         <span class="float-end btn-edit" id="sempitkan" onclick="sempitkan()"><i class="bi bi-chevron-left"></i></span>
                         <span class="float-end btn-edit" id="lebarkan" onclick="lebarkan()">Asset <i class="bi bi-chevron-right"></i></span>
                         <div id="isi-panel-left">
-                            <div>
-                                <div id="content-brand" style="font-size: 20px;font-weight:bold"></div>
-                                <div id="content-tanggal" style="font-size: 12px;" class="mb-3"> - </div>
-                                <div id="content-materi"> - </div>
-                            </div>
+                            <table class="table-dark table bordered" style="font-size: 12px;" >
+                                <tbody>
+                                    <tr class="mb-3">
+                                        <td>Tanggal </td>
+                                        <td id="content-tanggal"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Materi </td>
+                                        <td id="content-materi"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Subject </td>
+                                        <td id="content-subject"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             <hr/>    
                             <span style="color:gray;font-size: 12px;">* klik url dibawah asset untuk meng-copy url asset tersebut</span>
-                            <div class="mt-1" style="width:100%;height:335px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel"></div>
+                            <div class="mt-1" style="width:100%;height:280px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel"></div>
                         </div>
                     </div>
                     <div class="col-md-8 col-xs-12" id="panel-right">
@@ -407,8 +418,9 @@ if ($isId)
 
                 pathPreview = res.data.path;
                 $("#asset-panel").html(str);
-                $("#content-tanggal").html(tanggal + " Jam " + jam);
+                $("#content-tanggal").html(parseDateNamespace(tanggal) + " Jam " + parseTimeNamespace(jam));
                 $("#content-materi").html(materi == "null" ? "" : materi);
+                $("#content-subject").html(res.data.subject == "null" ? "" : res.data.subject);
 
             },
             error: function(er){

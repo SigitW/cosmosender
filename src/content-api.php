@@ -64,7 +64,8 @@ function loadContentById(){
                     tc.time_namespace,
                     ta.name,
                     mb.actual_path,
-                    mb.content_domain
+                    mb.content_domain,
+                    tc.subject
                     FROM t_asset ta INNER JOIN
                     t_content tc ON tc.id = ta.content_id INNER JOIN
                     m_brand mb ON mb.id = tc.brand_id  
@@ -89,11 +90,14 @@ function loadContentById(){
         // generate array of img url;
         $arrayimg = array();
         $availasset = $dataasset != "" && count($dataasset);
+        $subject = "";
         if ($availasset){
             foreach ($dataasset as $i => $asset) {
                 $arrayimg[$i] = $asset['content_domain'] . $asset['domain'] . "/" . 
                 $asset['aseet_namespace'] . "/" . $asset['date_namespace'] . "/" . 
                 $asset['time_namespace'] . "/" . 'img' . "/". $asset['name'];
+
+                $subject = $asset['subject'];
             }
         }
         // end
@@ -109,10 +113,7 @@ function loadContentById(){
         $obj->content = $datacontent;
         $obj->asset = $arrayimg;
         $obj->path = $path;
-
-        // echo $obj;
-        // exit();
-        // hasSuccess("success", $obj);    
+        $obj->subject = $subject;
 
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . ', on line : ' . $th->getLine());

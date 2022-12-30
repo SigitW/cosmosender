@@ -13,7 +13,7 @@ thead {
 }
 
 input {
-    background-color: rgba(47, 2, 2, 0.3) !important;
+    background-color: rgba(128, 128, 128, .3) !important;
     border: none !important;
     border-bottom: solid 3px gray !important;
     color: white !important;
