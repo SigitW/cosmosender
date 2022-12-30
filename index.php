@@ -8,9 +8,11 @@
 </body>
 <?php include 'footer.php' ?>
 <script>
+
     $(document).ready(function(){
         loadBrand();
-    })
+    });
+
     function loadBrand(){
         $.ajax({
             url : '<?= $baseurl ?>src/blast-rule-api.php',
@@ -24,10 +26,11 @@
                         const rules     = formatRules(item.rules);
                         const services  = formatServices(item.services);
                         const servers   = formatServer(item.servers);
+                        const firstLetter = getFirstLetter(item.name);
 
                         str += '<div class="card-brand mb-3">'+
                             '<div onclick="showAction(\''+item.id+'\')">' +
-                            '<div class="card-brand-title" style="background-color: teal;"><h1>'+item.name+'</h1></div>'+
+                            '<div class="card-brand-title" style="background-color: teal;"><div class="first-letter" style="background-color:'+getColorScheme(firstLetter)+'"><div style="margin:auto;width:fit-content;">'+firstLetter+'</div></div><span class="title">'+item.name+'</span></div>'+
                             '<div class="card-brand-property" style="background-color: teal;filter: brightness(85%);">'+
                             '<div class="row">'+
                             '<div class="col-md-6 mb-3" style="text-align: left;">'+ rules +
@@ -52,6 +55,25 @@
                 console.log(e);
             }
         })
+    }
+
+    function getColorScheme(letter){
+        const arrColor = [
+            {"id":"P","color":"#01854a"},
+            {"id":"S","color":"#fc4305"},
+            {"id":"I","color":"darkgrey"}
+        ];
+
+        const filter = arrColor.filter(p=>p.id === letter);
+        if (filter.length > 0){
+            return filter[0].color;
+        } else {
+            return "lightgrey";
+        }
+    }
+
+    function getFirstLetter(str){
+        return str.substring(0,1);
     }
 
     function formatRules(rules){

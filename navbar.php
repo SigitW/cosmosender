@@ -1,7 +1,7 @@
 <!-- As a link -->
 <nav class="navbar fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="<?= $baseurl ?>">Indraco Mail Sender</a>
+    <a class="navbar-brand" href="<?= $baseurl ?>"><i class="bi bi-card-checklist"></i> Indraco Mail Sender</a>
     <a class="btn-menu" data-bs-toggle="offcanvas" href="#menu" role="button" aria-controls="menu"><i class="bi bi-grid-1x2-fill"></i></a>
   </div>
 </nav>

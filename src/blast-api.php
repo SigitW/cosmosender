@@ -156,27 +156,6 @@ function blastTest(){
             }
         } 
     }
-    // try {
-    //     $mail = new PHPMailer();
-    //     $mail->isSMTP();
-    //     $mail->Host     = $host['host'];
-    //     $mail->SMTPAuth = true;
-    //     $mail->Username = $relay['email'];
-    //     $mail->Password = $relay['password'];
-    //     $mail->SMTPSecure = 'ssl';
-    //     $mail->Port       = $relay['port'];
-    //     $mail->setFrom($relay['email_from'], $brand['email_alias']);
-    //     $mail->addAddress($recipient, '');
-    //     $mail->CharSet    = "UTF-8";
-    //     $mail->isHTML(true);
-    //     $mail->Subject = $subject;
-    //     $mail->Body    = $content['body_content'];
-    //     $mail->AltBody = 'Sorry, cannot show this page. Your email client is not supported a HTML format';
-    //     $mail->send();    
-    //     hasSuccess("Berhasil Mengirim Email ke ".$recipient);    
-    // } catch (\Throwable $th) {
-    //     hasInternalError($th->getMessage() . " on line : " . $th->getLine());
-    // }
 }
 
 function getRelayById($relayId){
@@ -233,7 +212,7 @@ function loadCustByBrand(){
 
     if ($hasLastEmailId && $hasLimit){
         $whereBuilder .= "AND id > '".$brand['last_email_id']."' ";
-    }
+    }    
     
     $whereBuilder .= "ORDER BY id ";
     $whereBuilderDefault = "ORDER BY id ";
@@ -242,14 +221,14 @@ function loadCustByBrand(){
         $whereBuilder .= "LIMIT ".$emailLimit." ";
     }
 
-    // first get by creiteria
+    // first get by criteria
     try {
         $data = $model->select("mt_customer_email", [], $whereBuilder);
     } catch (\Throwable $th) {
         hasInternalError($th->getMessage() . " on line : " . $th->getLine());
     }
 
-    // if not found get by default createria
+    // if not found get by default criteria
     if (!isset($data) || count($data) == 0){
         try {
             $data = $model->select("mt_customer_email", [], "WHERE brand_id = '" . $brandId . "' AND flag = 'Y' " . $whereBuilderDefault);

@@ -18,7 +18,7 @@ if ($isId)
         <button class="btn btn-sm btn-light" id="btn-add"><i class="bi bi-plus-lg"></i> Add</button>
     </div>
     <div class="over-x">
-        <table class="table table-dark table-striped table-hover text-nowrap">
+        <table class="table table-dark table-striped table-hover text-nowrap table-bordered">
             <thead>
                 <tr>
                 <td>#</td>
@@ -121,14 +121,25 @@ if ($isId)
                         <span class="float-end btn-edit" id="sempitkan" onclick="sempitkan()"><i class="bi bi-chevron-left"></i></span>
                         <span class="float-end btn-edit" id="lebarkan" onclick="lebarkan()">Asset <i class="bi bi-chevron-right"></i></span>
                         <div id="isi-panel-left">
-                            <div>
-                                <div id="content-brand" style="font-size: 20px;font-weight:bold"></div>
-                                <div id="content-tanggal" style="font-size: 12px;" class="mb-3"> - </div>
-                                <div id="content-materi"> - </div>
-                            </div>
+                            <table class="table-dark table bordered" style="font-size: 12px;" >
+                                <tbody>
+                                    <tr class="mb-3">
+                                        <td>Tanggal </td>
+                                        <td id="content-tanggal"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Materi </td>
+                                        <td id="content-materi"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Subject </td>
+                                        <td id="content-subject"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             <hr/>    
                             <span style="color:gray;font-size: 12px;">* klik url dibawah asset untuk meng-copy url asset tersebut</span>
-                            <div class="mt-1" style="width:100%;height:335px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel"></div>
+                            <div class="mt-1" style="width:100%;height:280px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel"></div>
                         </div>
                     </div>
                     <div class="col-md-8 col-xs-12" id="panel-right">
@@ -265,10 +276,10 @@ if ($isId)
                         const num = 1 + i;
                         str += '<tr>'+
                             '<td>'+num+'</td>'+
-                            '<td width="500px;">'+ replaceNull(item.materi_name)+'</td>'+
-                            '<td>'+ replaceNull(item.subject)+'</td>'+
-                            '<td>'+item.date_namespace+'</td>'+
-                            '<td>'+item.time_namespace+'</td>'+
+                            '<td width="500px;">'+ replaceNull(item.materi_name) +'</td>'+
+                            '<td>'+ replaceNull(item.subject) +'</td>'+
+                            '<td>'+ parseDateNamespace(item.date_namespace) +'</td>'+
+                            '<td>'+ parseTimeNamespace(item.time_namespace) +'</td>'+
                             '<td>'+
                             '<div class="btn-edit d-inline ms-4 me-4" onclick="showEdit(\''+item.id+'\',\''+item.materi_name+'\', \''+item.subject+'\')"><i class="bi bi-pencil-square"></i> Edit</div>'+
                             '<div class="btn-edit d-inline me-4" onclick="showUpload(\''+item.id+'\', \''+item.materi_name+'\',\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-upload"></i> Upload Asset</div>'+
@@ -284,6 +295,19 @@ if ($isId)
                 console.log(e);
             }
         })
+    }
+
+    function parseDateNamespace(strDate){
+        const getYear = strDate.substring(0,2);
+        const getMonth = strDate.substring(2,4);
+        const getDate = strDate.substring(4,6);
+        return "20"+getYear+"-"+getMonth+"-"+getDate;
+    }
+
+    function parseTimeNamespace(strTime){
+        const getHour = strTime.substring(0,2);
+        const getMinute = strTime.substring(2,4);
+        return getHour+":"+getMinute;
     }
 
     function showUpload(id, materi, tgl, jam){
@@ -394,8 +418,9 @@ if ($isId)
 
                 pathPreview = res.data.path;
                 $("#asset-panel").html(str);
-                $("#content-tanggal").html(tanggal + " Jam " + jam);
+                $("#content-tanggal").html(parseDateNamespace(tanggal) + " Jam " + parseTimeNamespace(jam));
                 $("#content-materi").html(materi == "null" ? "" : materi);
+                $("#content-subject").html(res.data.subject == "null" ? "" : res.data.subject);
 
             },
             error: function(er){
