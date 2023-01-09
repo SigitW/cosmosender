@@ -45,10 +45,11 @@ switch ($do) {
 // function here
 function load(){
 
-    $id = !isset($_POST['brand_id']) ? "" : $_POST['brand_id'];
+    $id = !isset($_POST['brand_id']) ? "%" : $_POST['brand_id'];
+    $flag = !isset($_POST['flag']) ? "%" : $_POST['flag'];
 
     $model  = new TransModel;
-    $where  = $id == "" ? "" : "WHERE id = '".$id."'";
+    $where  = $id == "" ? "" : "WHERE id LIKE '".$id."' AND flag LIKE '".$flag."'";
     $data   = [];
     try {
         $data = $model->select("m_brand", [], $where);

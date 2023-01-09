@@ -17,7 +17,7 @@
         $.ajax({
             url : '<?= $baseurl ?>src/blast-rule-api.php',
             method : "POST",
-            data : {do:"load"},
+            data : {do:"load", flag:"Y"},
             success:function(res){                
                 if (res.data.length > 0){
                     let str = '';
@@ -28,7 +28,7 @@
                         const servers   = formatServer(item.servers);
                         const firstLetter = getFirstLetter(item.name);
 
-                        str += '<div class="card-brand mb-3">'+
+                        str += '<div class="card-brand mb-3"    >'+
                             '<div onclick="showAction(\''+item.id+'\')">' +
                             '<div class="card-brand-title" style="background-color: teal;"><div class="first-letter" style="background-color:'+getColorScheme(firstLetter)+'"><div style="margin:auto;width:fit-content;">'+firstLetter+'</div></div><span class="title">'+item.name+'</span></div>'+
                             '<div class="card-brand-property" style="background-color: teal;filter: brightness(85%);">'+
