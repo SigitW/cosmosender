@@ -1,4 +1,8 @@
 # cosmosender
+## v1.2.6-beta
+- penampilan brand pada index sesuai flag active
+- penambahan status sebagai modifier flag pada menu brand
+
 ## v1.2.5-beta
 - perbaikan informasi form dan perapihan tampilan
 

@@ -54,7 +54,12 @@
                 <label for="" class="mb-1"> Newsletter Folder</label>
                 <input type="text" name="" id="aseet_namespace" class="form-control mb-3"> 
                 <label for="" class="mb-1"> Service</label>
-                <select name="" id="sel-service" class="form-control"></select>
+                <select name="" id="sel-service" class="form-control mb-3"></select>
+                <label for="" class="mb-1"> Flag</label>
+                <select name="" id="sel-flag" class="form-control">
+                    <option value="Y">Active</option>
+                    <option value="N">Non Active</option>
+                </select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-success" id="btn-save"><i class="bi bi-check-lg"></i> Save</button>
@@ -154,6 +159,7 @@
                     $("#content_domain").val(item.content_domain);
                     $("#blast_limit").val(item.blast_limit);
                     $("#blast_hour_interval").val(item.blast_hour_interval);
+                    $("#sel-flag").val(item.flag);
                 }
             }, error:function(err){
                 $(".alert-warning").fadeIn().delay(2000).fadeOut();
@@ -184,7 +190,8 @@
                 path:path,
                 content_domain:contentdomain,
                 blast_limit:blastlimit,
-                blast_hour_interval:blasthourinterval
+                blast_hour_interval:blasthourinterval,
+                flag:flag
             }, success : function(res){
                 if (res.code == "200"){
                     $("#modal-add").modal("hide");
@@ -209,6 +216,7 @@
         const contentdomain     = $("#content_domain").val();
         const blastlimit        = $("#blast_limit").val();
         const blasthourinterval = $("#blast_hour_interval").val();
+        const flag              = $("#sel-flag option:selected").val();
 
         $.ajax({
             url : '<?= $baseurl ?>src/brand-api.php',
@@ -223,7 +231,8 @@
                 path:path,
                 content_domain:contentdomain,
                 blast_limit:blastlimit,
-                blast_hour_interval:blasthourinterval
+                blast_hour_interval:blasthourinterval,
+                flag:flag
             }, success : function(res){
                 if (res.code == "200"){
                     $("#modal-add").modal("hide");

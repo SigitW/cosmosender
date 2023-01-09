@@ -80,7 +80,7 @@ function saveAdd(){
         "name" => $_POST['name'],
         "aseet_namespace" => $_POST['newsletter'],
         "domain" => $_POST['domain'],
-        "flag" =>  "Y",
+        "flag" => "Y",
         "service_id" => $_POST['service'],
         "actual_path" => $_POST['path'],
         "content_domain" => $_POST['content_domain'],
@@ -107,7 +107,8 @@ function saveEdit(){
         "actual_path" => $_POST['path'],
         "content_domain" => $_POST['content_domain'],
         "blast_limit" => $_POST['blast_limit'] == '' ? 0 : $_POST['blast_limit'],
-        "blast_hour_interval" => $_POST['blast_hour_interval'] == '' ? 0 : $_POST['blast_hour_interval']
+        "blast_hour_interval" => $_POST['blast_hour_interval'] == '' ? 0 : $_POST['blast_hour_interval'],
+        "flag" => $_POST['flag']
     ];
 
     $where = [
