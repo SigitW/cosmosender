@@ -111,6 +111,9 @@ function doBlast() : void {
         foreach($recipients as $r)
         {
             $relay = $relays[$inRelay];
+
+            # replace {email} with recipient email
+            $bodyContent = str_replace("{email}", $r->email, $bodyContent);
             
             $data = [
                 "body_content" => $bodyContent,
@@ -124,7 +127,8 @@ function doBlast() : void {
                 "recipient" => $r->email,
                 "no" => $inRecip + 1,
             ];
-                   
+            
+            updateLastId($brandid, $r->id);
             sendBlast($data);
 
             if ($inRelay == $jumlahRelay - 1){
