@@ -9,6 +9,20 @@
     <div class="mb-3 text-end">
         <a href="../index.php" class="btn-menu"><i class="bi bi-chevron-left"></i> Kembali</a>
     </div>
+
+    <?php if ($_GET['id'] == "10") { ?>
+<!-- 
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="form-check form-switch float-end">
+                    <input class="form-check-input" type="checkbox" id="check-member">
+                    <label class="form-check-label">Only member</label>
+                </div>
+            </div>
+        </div> -->
+
+    <?php } ?>
+    
     <div class="row mb-3">
         <div class="col-md-6 col-xs-12 mb-2">
             <div id="panel-list-content mb-2">

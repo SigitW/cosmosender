@@ -1,11 +1,12 @@
 <?php include '../../header.php' ?>
 <?php include '../../navbar.php' ?>
-<?php 
+<?php
 $id = "";
 $isId = isset($_GET['id']);
 if ($isId)
-    $id = $_GET['id']; 
+    $id = $_GET['id'];
 ?>
+
 <body class="container">
     <h3 class="mb-3">Content Management</h3>
     <h5 class="mb-3" id="brand-title"></h5>
@@ -21,12 +22,12 @@ if ($isId)
         <table class="table table-dark table-striped table-hover text-nowrap table-bordered">
             <thead>
                 <tr>
-                <td>#</td>
-                <td>Materi Name</td>
-                <td>Subject</td>
-                <td>Date</td>
-                <td>Time</td>
-                <td></td>
+                    <td>#</td>
+                    <td>Materi Name</td>
+                    <td>Subject</td>
+                    <td>Date</td>
+                    <td>Time</td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -48,11 +49,11 @@ if ($isId)
                 <div class="row">
                     <div class="col-md-12 col-xs-12">
                         <label for="" class="mb-1">Materi</label>
-                        <input type="text" name="" id="add-materi" class="form-control mb-3"/>
+                        <input type="text" name="" id="add-materi" class="form-control mb-3" />
                         <label for="" class="mb-1">Subject</label>
-                        <input type="text" name="" id="add-subject" class="form-control mb-3"/>
+                        <input type="text" name="" id="add-subject" class="form-control mb-3" />
                         <label for="" class="mb-1">Date</label>
-                        <input type="date" name="" id="add-date" class="form-control mb-3"/>
+                        <input type="date" name="" id="add-date" class="form-control mb-3" />
                         <label for="" class="mb-1">Blast Hour</label>
                         <select name="" id="add-time" class="form-control mb-3">
                             <option value="11:00">11:00</option>
@@ -78,13 +79,13 @@ if ($isId)
             </div>
             <div class="modal-body">
                 <div class="alert alert-warning warning-edit display-none mb-3"></div>
-                <input type="hidden" name="" id="edit-id"/>
+                <input type="hidden" name="" id="edit-id" />
                 <div class="row">
                     <div class="col-md-12 col-xs-12">
                         <label for="" class="mb-1">Materi</label>
-                        <input type="text" name="" id="edit-materi" class="form-control mb-3"/>
+                        <input type="text" name="" id="edit-materi" class="form-control mb-3" />
                         <label for="" class="mb-1">Subject</label>
-                        <input type="text" name="" id="edit-subject" class="form-control mb-3"/>
+                        <input type="text" name="" id="edit-subject" class="form-control mb-3" />
                         <!-- <label for="" class="mb-1">Date</label>
                         <input type="date" name="" id="edit-date" class="form-control mb-3"/>
                         <label for="" class="mb-1">Blast Hour</label>
@@ -111,9 +112,9 @@ if ($isId)
                 <button type="button" class="btn-close" id="btn-close-edit-content" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" name="" id="c-date"/>
-                <input type="hidden" name="" id="c-time"/>
-                <input type="hidden" name="content_id" id="id-content"/>
+                <input type="hidden" name="" id="c-date" />
+                <input type="hidden" name="" id="c-time" />
+                <input type="hidden" name="content_id" id="id-content" />
                 <div class="alert alert-warning warning-edit-content display-none mb-3"></div>
                 <div class="alert alert-success success-edit-content display-none mb-3"></div>
                 <div class="row">
@@ -121,7 +122,7 @@ if ($isId)
                         <span class="float-end btn-edit" id="sempitkan" onclick="sempitkan()"><i class="bi bi-chevron-left"></i></span>
                         <span class="float-end btn-edit" id="lebarkan" onclick="lebarkan()">Asset <i class="bi bi-chevron-right"></i></span>
                         <div id="isi-panel-left">
-                            <table class="table-dark table bordered" style="font-size: 12px;" >
+                            <table class="table-dark table bordered" style="font-size: 12px;">
                                 <tbody>
                                     <tr class="mb-3">
                                         <td>Tanggal </td>
@@ -137,7 +138,7 @@ if ($isId)
                                     </tr>
                                 </tbody>
                             </table>
-                            <hr/>    
+                            <hr />
                             <span style="color:gray;font-size: 12px;">* klik url dibawah asset untuk meng-copy url asset tersebut</span>
                             <div class="mt-1" style="width:100%;height:280px;background-color:lightgrey;border-radius:5px;overflow-y:scroll;padding:5px;" id="asset-panel"></div>
                         </div>
@@ -148,8 +149,37 @@ if ($isId)
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary" id="btn-redirect-list"><i class="bi bi-list"></i> Redirect List</button>
                 <button type="button" class="btn btn-sm btn-success" id="btn-save-content"><i class="bi bi-check-lg"></i> Save</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-list-redirect" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-list-redirect" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">List redirect url</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <div style="font-size: 12px;color:lightgrey">
+                    <div>* {collection-id} isikan dengan id collection di website</div>
+                    <div>* {email} tidak perlu diganti</div>
+                </div>
+                <table class="table table-dark table-striped table-borderless mt-3">
+                    <tbody id="tbody-list-redirect">
+                        <tr>
+                            <td>Instagram</td>
+                            <td>https://instagram.com/supresso.sg</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <div class="modal-footer">
+               
+            </div> -->
         </div>
     </div>
 </div>
@@ -184,28 +214,27 @@ if ($isId)
 
 <?php include '../../footer.php' ?>
 <script>
-
     var textArea = document.getElementById("content-editor");
     var editor = CodeMirror.fromTextArea(textArea, {
-                    lineNumbers: true,
-                    mode: "xml",
-                    htmlMode:true,
-                    matchBrackets: true,
-                    theme:"dracula",
-                });    
+        lineNumbers: true,
+        mode: "xml",
+        htmlMode: true,
+        matchBrackets: true,
+        theme: "dracula",
+    });
     editor.setSize(null, 470);
 
     var foundId = '<?= $isId ?>';
-    $(document).ready(function(){
+    $(document).ready(function() {
         $(".alert-danger").hide();
-        if (!foundId){
+        if (!foundId) {
             callError("Brand Id Tidak Ditemukan.");
         };
         loadContent();
         loadBrand();
     });
 
-    function sempitkan(){
+    function sempitkan() {
         $("#panel-left").attr("class", "col-md-1 col-xs-12");
         $("#panel-right").attr("class", "col-md-11 col-xs-12");
         $("#isi-panel-left").hide("fast");
@@ -213,7 +242,7 @@ if ($isId)
         $("#sempitkan").hide();
     }
 
-    function lebarkan(){
+    function lebarkan() {
         $("#panel-left").attr("class", "col-md-4 col-xs-12");
         $("#panel-right").attr("class", "col-md-8 col-xs-12");
         $("#isi-panel-left").show("fast");
@@ -221,96 +250,101 @@ if ($isId)
         $("#lebarkan").hide();
     }
 
-    function callError(data){
+    function callError(data) {
         $(".alert-danger").show();
         $(".alert-danger").html(data);
     }
 
-    $("#btn-add").click(function(){
+    $("#btn-add").click(function() {
         $("#modal-add").modal("show");
     })
 
-    var base        = '<?= $base; ?>';
+    var base = '<?= $base; ?>';
     //var base        = 'https://';
-    var objBrand    = {};
-    var apipath     = "";
+    var objBrand = {};
+    var apipath = "";
     var contentpath = "";
-    var uploadpath  = "";
-    function loadBrand(){
+    var uploadpath = "";
+
+    function loadBrand() {
         $.ajax({
-            url:'<?= $baseurl ?>src/brand-api.php',
-            method : "POST",
-            data : {do:"load-by-id", brand_id:'<?= $id ?>'},
-            success:function(res){
+            url: '<?= $baseurl ?>src/brand-api.php',
+            method: "POST",
+            data: {
+                do: "load-by-id",
+                brand_id: '<?= $id ?>'
+            },
+            success: function(res) {
                 console.log(res);
-                if (res.code == "200" && res.data.length > 0){
-                    objBrand    = res.data[0];
-                    apipath     = base + objBrand.service_path;
+                if (res.code == "200" && res.data.length > 0) {
+                    objBrand = res.data[0];
+                    apipath = base + objBrand.service_path;
                     contentpath = objBrand.content_path;
-                    uploadpath  = objBrand.upload_path;
+                    uploadpath = objBrand.upload_path;
                     $("#brand-title").html(objBrand.name);
                 }
                 console.log(apipath);
                 console.log(contentpath);
                 console.log(uploadpath);
-            }, error:function(er){
+            },
+            error: function(er) {
                 $(".danger-search").fadeIn();
                 $(".danger-search").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
             }
         })
     }
 
-    function loadContent(){
+    function loadContent() {
         $.ajax({
-            url : '<?= $baseurl ?>/src/content-api.php',
-            method : "POST",
-            data : {
-                do : "load",
-                brand_id : '<?= $id ?>'
-            }, 
-            success : function (res) {
-                if (res.data.length > 0){
+            url: '<?= $baseurl ?>/src/content-api.php',
+            method: "POST",
+            data: {
+                do: "load",
+                brand_id: '<?= $id ?>'
+            },
+            success: function(res) {
+                if (res.data.length > 0) {
                     let str = '';
-                    $.each(res.data, function(i, item){
+                    $.each(res.data, function(i, item) {
 
                         const num = 1 + i;
-                        str += '<tr>'+
-                            '<td>'+num+'</td>'+
-                            '<td width="500px;">'+ replaceNull(item.materi_name) +'</td>'+
-                            '<td>'+ replaceNull(item.subject) +'</td>'+
-                            '<td>'+ parseDateNamespace(item.date_namespace) +'</td>'+
-                            '<td>'+ parseTimeNamespace(item.time_namespace) +'</td>'+
-                            '<td>'+
-                            '<div class="btn-edit d-inline ms-4 me-4" onclick="showEdit(\''+item.id+'\',\''+item.materi_name+'\', \''+item.subject+'\')"><i class="bi bi-pencil-square"></i> Edit</div>'+
-                            '<div class="btn-edit d-inline me-4" onclick="showUpload(\''+item.id+'\', \''+item.materi_name+'\',\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-upload"></i> Upload Asset</div>'+
-                            '<div class="btn-edit d-inline me-4" onclick="showContentById(\''+item.id+'\', \''+item.materi_name+'\',\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-grid"></i> Content</div>'+
-                            '<div class="btn-edit d-inline me-4" onclick="showPreview(\''+item.date_namespace+'\',\''+item.time_namespace+'\')"><i class="bi bi-search"></i> View</div>'+
-                            '</td>'+
+                        str += '<tr>' +
+                            '<td>' + num + '</td>' +
+                            '<td width="500px;">' + replaceNull(item.materi_name) + '</td>' +
+                            '<td>' + replaceNull(item.subject) + '</td>' +
+                            '<td>' + parseDateNamespace(item.date_namespace) + '</td>' +
+                            '<td>' + parseTimeNamespace(item.time_namespace) + '</td>' +
+                            '<td>' +
+                            '<div class="btn-edit d-inline ms-4 me-4" onclick="showEdit(\'' + item.id + '\',\'' + item.materi_name + '\', \'' + item.subject + '\')"><i class="bi bi-pencil-square"></i> Edit</div>' +
+                            '<div class="btn-edit d-inline me-4" onclick="showUpload(\'' + item.id + '\', \'' + item.materi_name + '\',\'' + item.date_namespace + '\',\'' + item.time_namespace + '\')"><i class="bi bi-upload"></i> Upload Asset</div>' +
+                            '<div class="btn-edit d-inline me-4" onclick="showContentById(\'' + item.id + '\', \'' + item.materi_name + '\',\'' + item.date_namespace + '\',\'' + item.time_namespace + '\')"><i class="bi bi-grid"></i> Content</div>' +
+                            '<div class="btn-edit d-inline me-4" onclick="showPreview(\'' + item.date_namespace + '\',\'' + item.time_namespace + '\')"><i class="bi bi-search"></i> View</div>' +
+                            '</td>' +
                             '</tr>';
                     });
                     $("#table-body").html(str);
                 }
-            }, 
-            error : function (e) {
+            },
+            error: function(e) {
                 console.log(e);
             }
         })
     }
 
-    function parseDateNamespace(strDate){
-        const getYear = strDate.substring(0,2);
-        const getMonth = strDate.substring(2,4);
-        const getDate = strDate.substring(4,6);
-        return "20"+getYear+"-"+getMonth+"-"+getDate;
+    function parseDateNamespace(strDate) {
+        const getYear = strDate.substring(0, 2);
+        const getMonth = strDate.substring(2, 4);
+        const getDate = strDate.substring(4, 6);
+        return "20" + getYear + "-" + getMonth + "-" + getDate;
     }
 
-    function parseTimeNamespace(strTime){
-        const getHour = strTime.substring(0,2);
-        const getMinute = strTime.substring(2,4);
-        return getHour+":"+getMinute;
+    function parseTimeNamespace(strTime) {
+        const getHour = strTime.substring(0, 2);
+        const getMinute = strTime.substring(2, 4);
+        return getHour + ":" + getMinute;
     }
 
-    function showUpload(id, materi, tgl, jam){
+    function showUpload(id, materi, tgl, jam) {
         $("#modal-upload").modal("show");
         $("#upload-brand-name").val(objBrand.name);
         $("#upload-path").val(uploadpath);
@@ -323,17 +357,17 @@ if ($isId)
         $("#upload-back-url").val(window.location.href);
     }
 
-    $("#btn-save-upload").on("click", function(){
+    $("#btn-save-upload").on("click", function() {
 
-        if ($("#fileupload").val() == ''){
+        if ($("#fileupload").val() == '') {
             $(".warning-upload").fadeIn().delay(2000).fadeOut();
             return false;
         }
-        
+
         $("#form-upload").submit();
     });
 
-    function showEdit(id, materi, subject){
+    function showEdit(id, materi, subject) {
         $(".warning-edit").hide();
         $(".warning-edit").html("");
         $("#edit-id").val(id);
@@ -342,28 +376,30 @@ if ($isId)
         $("#modal-edit").modal('show');
     }
 
-    function saveEdit(){
+    function saveEdit() {
 
-        const id      = $("#edit-id").val();
-        const materi  = $("#edit-materi").val();
+        const id = $("#edit-id").val();
+        const materi = $("#edit-materi").val();
         const subject = $("#edit-subject").val();
 
         $.ajax({
-            url:'<?= $baseurl ?>src/content-api.php',
-            method:"POST",
-            data:{
-                do:"update-materi",
-                content_id:id, 
-                materi:materi,
-                subject:subject
-            }, success:function(res){
-                if (res.code == "200"){
+            url: '<?= $baseurl ?>src/content-api.php',
+            method: "POST",
+            data: {
+                do: "update-materi",
+                content_id: id,
+                materi: materi,
+                subject: subject
+            },
+            success: function(res) {
+                if (res.code == "200") {
                     $(".success-search").fadeIn().delay(2000).fadeOut();
                     $(".success-search").html(res.message);
                     $("#modal-edit").modal('hide');
                     loadContent();
-                } 
-            }, error:function(er){
+                }
+            },
+            error: function(er) {
                 console.log(er);
                 $(".warning-edit").fadeIn();
                 $(".warning-edit").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -371,7 +407,7 @@ if ($isId)
         })
     }
 
-    function showContentById(id, materi, tanggal, jam){
+    function showContentById(id, materi, tanggal, jam) {
 
         lebarkan();
 
@@ -383,20 +419,20 @@ if ($isId)
         $(".warning-edit-content").hide();
 
         pathPreview = "";
-        
+
         $.ajax({
             url: '<?= $baseurl ?>src/content-api.php',
             method: "POST",
-            data : {
-                content_id : id,
-                do : 'load-content-by-id'
+            data: {
+                content_id: id,
+                do: 'load-content-by-id'
             },
-            success: function (res){
+            success: function(res) {
 
                 console.log(res);
                 let str = "";
 
-                if (res.data.content != null){
+                if (res.data.content != null) {
                     showCodeMirror(res.data.content);
                 } else {
                     showCodeMirror("");
@@ -405,9 +441,9 @@ if ($isId)
                 setTimeout(() => {
                     editor.refresh();
                 }, 500);
-                
-                if (res.data.asset.length > 0){
-                    $.each(res.data.asset, function(i,item){
+
+                if (res.data.asset.length > 0) {
+                    $.each(res.data.asset, function(i, item) {
                         str += panelAsset(item);
                     });
                 }
@@ -423,7 +459,7 @@ if ($isId)
                 $("#content-subject").html(res.data.subject == "null" ? "" : res.data.subject);
 
             },
-            error: function(er){
+            error: function(er) {
                 console.log(er);
                 $(".warning-edit-content").fadeIn();
                 $(".warning-edit-content").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -431,30 +467,30 @@ if ($isId)
         });
     }
 
-    $("#btn-save-content").click(function(){
+    $("#btn-save-content").click(function() {
         updateContent();
     });
 
-    function updateContent(){
-        const contentbody   = editor.getDoc().getValue();
-        const id            = $("#id-content").val();
+    function updateContent() {
+        const contentbody = editor.getDoc().getValue();
+        const id = $("#id-content").val();
         const dateNamespace = $("#c-date").val();
         const timeNamespace = $("#c-time").val();
-        
+
         $.ajax({
             url: '<?= $baseurl ?>src/content-api.php',
             method: "POST",
-            data : {
-                do : 'update-content',
-                content_id : id,
-                content : contentbody
+            data: {
+                do: 'update-content',
+                content_id: id,
+                content: contentbody
             },
-            success: function(res){
-                if (res.code == "200"){
+            success: function(res) {
+                if (res.code == "200") {
                     sendContentToServer(contentbody, dateNamespace, timeNamespace);
                 }
             },
-            error: function(er){
+            error: function(er) {
                 console.log(er);
                 $(".warning-edit-content").fadeIn().delay(2000).fadeOut();
                 $(".warning-edit-content").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -462,24 +498,26 @@ if ($isId)
         });
     };
 
-    function sendContentToServer(content, datenamespace, timenamespace){
+    function sendContentToServer(content, datenamespace, timenamespace) {
         const path = uploadpath + datenamespace + "/" + timenamespace + "/";
         console.log(path);
         $.ajax({
-            url:apipath + "api/api-content.php",
-            method:"POST",
-            data:{
-                do:"upload-content", 
-                id:"1",
-                token:"1",
-                content:content, 
-                path:path
-            }, success:function(res){
-                if (res.code == "200"){
+            url: apipath + "api/api-content.php",
+            method: "POST",
+            data: {
+                do: "upload-content",
+                id: "1",
+                token: "1",
+                content: content,
+                path: path
+            },
+            success: function(res) {
+                if (res.code == "200") {
                     $(".success-edit-content").html(res.message);
                     $(".success-edit-content").fadeIn().delay(2000).fadeOut();
                 }
-            }, error:function(er){
+            },
+            error: function(er) {
                 console.log(er);
                 $(".warning-edit-content").fadeIn().delay(2000).fadeOut();
                 $(".warning-edit-content").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -487,46 +525,46 @@ if ($isId)
         })
     }
 
-    function replaceNull(str){
+    function replaceNull(str) {
         return str == null ? "-" : str;
     }
 
     let pathPreview = "";
 
 
-    function showCodeMirror(code){
+    function showCodeMirror(code) {
         editor.getDoc().setValue(code);
     }
 
-    function panelAsset(item){
-        return '<div style="border-radius:5px 5px 0px 0px;height:100px;margin-top:10px;text-align:center;cursor:pointer;background-color:grey;">'+
-        '<img src="'+ base + item +'" style="height:100%;margin:auto 0px">'+
-        '<br/>'+
-        '<input type="text" class="form-control" style="cursor:pointer;color:grey;border-radius: 0px 0px 5px 5px;width:100%;" value="'+ base + item + '" onclick="navigator.clipboard.writeText(this.value);" readonly/>' +
-        '<div/>';
+    function panelAsset(item) {
+        return '<div style="border-radius:5px 5px 0px 0px;height:100px;margin-top:10px;text-align:center;cursor:pointer;background-color:grey;">' +
+            '<img src="' + base + item + '" style="height:100%;margin:auto 0px">' +
+            '<br/>' +
+            '<input type="text" class="form-control" style="cursor:pointer;color:grey;border-radius: 0px 0px 5px 5px;width:100%;" value="' + base + item + '" onclick="navigator.clipboard.writeText(this.value);" readonly/>' +
+            '<div/>';
     }
 
-    function showPreview(tgl, jam){
+    function showPreview(tgl, jam) {
         const pathPreview = base + contentpath + tgl + "/" + jam + "/";
         window.open(pathPreview);
     }
 
-    $("#btn-close-edit-content").click(function(){
-        if (confirm("Pastikan Menyimpan Content Editor Dahulu Sebelum Keluar ?")){
+    $("#btn-close-edit-content").click(function() {
+        if (confirm("Pastikan Menyimpan Content Editor Dahulu Sebelum Keluar ?")) {
             $("#modal-edit-content").modal("hide");
         }
     });
 
-    function uploadAsset(){
+    function uploadAsset() {
 
-        const id            = $("#id-content").val();
-        const filePath      = $("#files").val();
-        const filename      = getFileName(filePath);
-        const type          = filename.split('.').pop();
-        const ltype         = type.toLowerCase();
-        const isValidType   = ltype == "png" || ltype == "jpg" || ltype == "gif" || ltype == "jpeg";
+        const id = $("#id-content").val();
+        const filePath = $("#files").val();
+        const filename = getFileName(filePath);
+        const type = filename.split('.').pop();
+        const ltype = type.toLowerCase();
+        const isValidType = ltype == "png" || ltype == "jpg" || ltype == "gif" || ltype == "jpeg";
 
-        if (!isValidType){
+        if (!isValidType) {
             alert(filename + ' - Not Valid Type');
             return;
         }
@@ -534,20 +572,20 @@ if ($isId)
         $.ajax({
             url: '<?= $baseurl ?>src/content-api.php',
             method: 'POST',
-            data : {
-                token : "1",
-                id : "1",
-                content_id : id,
-                strimg : base64Files,
-                type : type,
-                do : 'upload-asset'
+            data: {
+                token: "1",
+                id: "1",
+                content_id: id,
+                strimg: base64Files,
+                type: type,
+                do: 'upload-asset'
             },
-            success: function(res){
-                if (res.code == "200"){
+            success: function(res) {
+                if (res.code == "200") {
                     uploadAssetToServer(type, res.data.filename);
                 }
             },
-            error: function(er){
+            error: function(er) {
                 console.log(er);
                 $(".warning-edit-content").fadeIn();
                 $(".warning-edit-content").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -556,7 +594,7 @@ if ($isId)
     }
 
     let base64Files = '';
-    $("#files").on('change', function(e){
+    $("#files").on('change', function(e) {
         // Get a reference to the file
         const file = e.target.files[0];
 
@@ -570,33 +608,33 @@ if ($isId)
         reader.readAsDataURL(file);
     })
 
-    function uploadAssetToServer(type, filename){
+    function uploadAssetToServer(type, filename) {
 
         const dateNamespace = $("#c-date").val();
         const timeNamespace = $("#c-time").val();
-        const path          = uploadpath + dateNamespace + "/" + timeNamespace + "/" + "img/";
+        const path = uploadpath + dateNamespace + "/" + timeNamespace + "/" + "img/";
 
         $.ajax({
             url: apipath + 'api/api-content.php',
             method: 'POST',
-            data : {
-                token : "1",
-                id : "1",
-                strimg : base64Files,
-                type : type,
-                path : path,
-                filename : filename,
-                do : 'upload-asset'
+            data: {
+                token: "1",
+                id: "1",
+                strimg: base64Files,
+                type: type,
+                path: path,
+                filename: filename,
+                do: 'upload-asset'
             },
-            success: function(res){
-                if (res.code == "200"){
+            success: function(res) {
+                if (res.code == "200") {
                     loadPanelAsset();
                     $("#files").val("");
                     $(".success-edit-content").html(res.message);
                     $(".success-edit-content").fadeIn().delay(2000).fadeOut();
                 }
             },
-            error: function(er){
+            error: function(er) {
                 console.log(er);
                 $(".warning-edit-content").fadeIn();
                 $(".warning-edit-content").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -604,29 +642,28 @@ if ($isId)
         });
     }
 
-    function loadPanelAsset(){
+    function loadPanelAsset() {
         const id = $("#id-content").val();
         $.ajax({
             url: '<?= $baseurl ?>src/content-api.php',
             type: 'POST',
-            headers: {
+            headers: {},
+            data: {
+                token: "1",
+                id: "1",
+                content_id: id,
+                do: 'load-content-by-id'
             },
-            data : {
-                token : "1",
-                id : "1",
-                content_id : id,
-                do : 'load-content-by-id'
-            },
-            success: function (res){
+            success: function(res) {
                 let str = '';
-                if (res.data.asset.length > 0){
-                    $.each(res.data.asset, function(i,item){
+                if (res.data.asset.length > 0) {
+                    $.each(res.data.asset, function(i, item) {
                         str += panelAsset(item);
                     });
                 }
                 $("#asset-panel").html(str);
             },
-            error: function(er){
+            error: function(er) {
                 console.log(er);
                 $(".warning-edit-content").fadeIn();
                 $(".warning-edit-content").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -634,7 +671,7 @@ if ($isId)
         });
     }
 
-    function getFileName(fullPath){
+    function getFileName(fullPath) {
         var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
         var filename = fullPath.substring(startIndex);
         if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
@@ -643,18 +680,18 @@ if ($isId)
         return "";
     }
 
-    function createContent(){
-        const materi    = $("#add-materi").val();
-        const subject   = $("#add-subject").val();
-        const date      = $("#add-date").val();
-        const time      = $("#add-time").val();
+    function createContent() {
+        const materi = $("#add-materi").val();
+        const subject = $("#add-subject").val();
+        const date = $("#add-date").val();
+        const time = $("#add-time").val();
 
-        if (date == ""){
+        if (date == "") {
             alert("Tolong isikan Content Blast Date");
             return;
         }
-        
-        if (time == ""){
+
+        if (time == "") {
             alert("Tolong isikan Content Blast Time");
             return;
         }
@@ -663,14 +700,14 @@ if ($isId)
         const arrTime = time.split(':');
 
         let mappedDate = "";
-        $.each(arrDate, function(i, item){            
+        $.each(arrDate, function(i, item) {
             mappedDate += arrDate[i];
             if (i == 0)
-                mappedDate = mappedDate.substring(2,4);
+                mappedDate = mappedDate.substring(2, 4);
         });
 
         let mappedTime = "";
-        $.each(arrTime, function(i, item){
+        $.each(arrTime, function(i, item) {
             mappedTime += arrTime[i];
         });
 
@@ -678,16 +715,16 @@ if ($isId)
             url: '<?= $baseurl ?>src/content-api.php',
             method: 'POST',
             data: {
-                token : "1",
-                id : "1",
-                brandid : '<?= $id ?>',
-                materi : materi,
-                subject : subject,
-                date : mappedDate,
-                time : mappedTime,
-                do : 'create-content'
+                token: "1",
+                id: "1",
+                brandid: '<?= $id ?>',
+                materi: materi,
+                subject: subject,
+                date: mappedDate,
+                time: mappedTime,
+                do: 'create-content'
             },
-            success: function (res) {
+            success: function(res) {
                 if (res.code == "200") {
                     createDirToServer(mappedDate, mappedTime);
                 } else {
@@ -696,7 +733,7 @@ if ($isId)
                     $(".warning-add").html(res.responseJSON == null ? res.responseText : res.responseJSON.message);
                 }
             },
-            error: function (er) {
+            error: function(er) {
                 console.log(er);
                 $(".warning-add").fadeIn();
                 $(".warning-add").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -704,7 +741,7 @@ if ($isId)
         });
     }
 
-    function createDirToServer(mappedDate, mappedTime){
+    function createDirToServer(mappedDate, mappedTime) {
 
         const strBrandData = JSON.stringify(objBrand);
 
@@ -712,15 +749,15 @@ if ($isId)
             url: apipath + 'api/api-content.php',
             method: 'POST',
             data: {
-                token : "1",
-                id : "1",
-                brand : strBrandData,
-                date : mappedDate,
-                time : mappedTime,
-                do : 'create-content'
+                token: "1",
+                id: "1",
+                brand: strBrandData,
+                date: mappedDate,
+                time: mappedTime,
+                do: 'create-content'
             },
-            success: function (res) {
-                if (res.code == "200"){
+            success: function(res) {
+                if (res.code == "200") {
                     $(".success-search").html(res.message);
                     $(".success-search").fadeIn().delay(2000).fadeOut();
                     $("#modal-add").modal("hide");
@@ -731,7 +768,7 @@ if ($isId)
                     $(".warning-add").html(res.responseJSON == null ? res.responseText : res.responseJSON.message);
                 }
             },
-            error: function (er) {
+            error: function(er) {
                 console.log(er);
                 $(".warning-add").fadeIn();
                 $(".warning-add").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
@@ -739,4 +776,40 @@ if ($isId)
         });
     }
 
+    $("#btn-redirect-list").on("click", function() {
+        $("#modal-list-redirect").modal('show');
+        $("#tbody-list-redirect").html("");
+
+        const date = $("#c-date").val();
+
+        $.ajax({
+            url: '<?= $baseurl ?>src/content-api.php',
+            method: 'POST',
+            data: {
+                do: 'get-list-redirect',
+                brandid: '<?= $id ?>',
+                edm: date
+            },
+            success: function(res) {
+
+                console.log(res);
+
+                if (res.data.length > 0) {
+                    let str = ``;
+                    $.each(res.data, function(i, item) {
+                        str += `<tr>
+                                    <td style="padding:10px">${item.name}</td>
+                                    <td style="padding:10px">${item.url}</td>
+                                </tr>`;
+                    });
+                    $("#tbody-list-redirect").html(str);
+                }
+
+            },
+            error: function(err) {
+
+            }
+        });
+
+    });
 </script>

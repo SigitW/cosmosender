@@ -5,6 +5,7 @@
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use TransModel\TransModel;
 
 require_once("../basemodel/TransModel.php");
 require_once("response.php");
@@ -130,13 +131,14 @@ function doBlast() : void {
                 sleep(5);
                 // echo '<br><br>============ Delay 5 Detik: ==============<br><br>';
                 $inRelay = 0;
+                
             } else  {
                 $inRelay ++;
             }
-
-            if ($hasLimit && $inRecip == $jumlahRecipients - 1){
-                updateLastId($brandid, $r->id);
-            }
+            
+            // if ($hasLimit && $inRecip == $jumlahRecipients - 1){
+            //     updateLastId($brandid, $r->id);
+            // }
 
             $inRecip ++;
         }

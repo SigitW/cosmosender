@@ -36,6 +36,7 @@
             <div class="modal-body">
                 <h5 class="mb-3" id="title"> - </h5>
                 <div class="text-end mb-1">
+                    <button class="btn btn-sm btn-light" id="btn-sync-membership"><i class="bi bi-arrow-repeat"></i> Sync only membership</button>
                     <button class="btn btn-sm btn-light" id="btn-sync"><i class="bi bi-arrow-repeat"></i> Sync</button>
                 </div>
                 <input type="hidden" name="" id="id">
@@ -242,7 +243,7 @@
         // console.log(list);
         const listEmail = list.filter(p => p.page == nopage);
         let str = '<tr>'+
-                    '<td colspan="4">List Customer Email</td>'+
+                    '<td colspan="5">List Customer Email</td>'+
                   '</tr>';
         $.each(listEmail, function(i, item){
             str += '<tr>'+

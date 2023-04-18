@@ -54,7 +54,7 @@
                 </div>
             </form>
             <div class="align-bottom">
-                v.1.2.6-beta
+                v.1.2.7-beta
             </div>
         </div>
     </div>

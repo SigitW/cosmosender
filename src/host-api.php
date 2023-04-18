@@ -1,4 +1,7 @@
 <?php 
+
+use TransModel\TransModel;
+
 //require
 require_once("../basemodel/TransModel.php");
 require_once("response.php");

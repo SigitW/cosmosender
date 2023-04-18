@@ -12,12 +12,21 @@ thead {
     border-bottom: solid 3px rgba(128, 128, 128, .3);
 }
 
-input {
+input:not([type=checkbox]){
     background-color: rgba(128, 128, 128, .3) !important;
     border: none !important;
     border-bottom: solid 3px gray !important;
     color: white !important;
     border-radius: 0px !important;
+}
+
+.form-check-input{
+    cursor:pointer;
+}
+
+.form-check-input:checked{
+    background-color: teal;
+    border-color: teal;
 }
 
 input:focus{

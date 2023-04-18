@@ -33,6 +33,7 @@
             <div class="modal-body">
                 <h5 class="mb-3" id="title">Pandan Garden</h5>
                 <div class="text-end mb-1">
+                    <button class="btn btn-sm btn-light" id="btn-sync-membership"><i class="bi bi-arrow-repeat"></i> Sync membership</button>
                     <button class="btn btn-sm btn-light" id="btn-sync"><i class="bi bi-arrow-repeat"></i> Sync</button>
                 </div>
                 <input type="hidden" name="" id="id">
@@ -166,6 +167,12 @@
         $(".success-sync").html("");
         $("#urlpath").val(urlpath); 
         $("#body-table").html("");
+
+        if (slug == "supresso-sg")
+            $("#btn-sync-membership").removeClass("d-none");
+        else 
+            $("#btn-sync-membership").addClass("d-none");   
+
         loadSyncConfigData(id);       
         loadEmailData();
     }
@@ -209,6 +216,47 @@
     $("#btn-sync").click(function(){
         syncEmail();
     });
+
+    $("#btn-sync-membership").click(function(){
+        if (confirm("Data ini akan mengganti data yg ada dengan hanya membership. lanjutkan ?")){
+            syncEmailMembership();
+        }
+    });
+
+    function syncEmailMembership(){
+        const id    = $("#id").val();
+        const url   = $("#urlpath").val();
+        const slug  = $("#slug").val();
+        const emailColumn    = $("#c-email-column").val();
+        const nameColumn     = $("#c-name-column").val();
+
+        $.ajax({
+            url : url +'/api/api-sync.php',
+            method : "POST",
+            data : {
+                do:"get-email-sync-membership",
+                slug:slug,
+                emailcolumn:emailColumn,
+                namecolumn:nameColumn
+            }, success:function(res){
+                console.log("Success");
+                console.log(res);
+                if (res.code == "200" && res.data.length > 0){
+                    let strJson = JSON.stringify(res.data);
+                    syncEmailToDb(id, strJson, emailColumn, nameColumn);
+                    loadEmailData();
+                } else {
+                    $(".warning-sync").fadeIn();
+                    $(".warning-sync").html("Tidak Ada Email Ter-sinkronisasi");
+                }
+            }, error:function(er){
+                console.log("Error");
+                console.log(er);
+                $(".warning-sync").fadeIn();
+                $(".warning-sync").html(er.responseJSON == null ? er.responseText : er.responseJSON.message);
+            }
+        });
+    }
     
     function syncEmail(){
         const url   = $("#urlpath").val();
@@ -251,6 +299,8 @@
 
     function syncEmailToDb(id, str, emailColumn, nameColumn){
         console.log("sync proses ...");
+        console.log(str);
+        console.log(id);
         $.ajax({
             url : '<?= $baseurl; ?>src/email-sync-api.php',
             method : "POST",
@@ -343,7 +393,7 @@
         // console.log(list);
         const listEmail = list.filter(p => p.page == nopage);
         let str = '<tr>'+
-                    '<td colspan="4">List Customer Email</td>'+
+                    '<td colspan="5">List Customer Email</td>'+
                   '</tr>';
         $.each(listEmail, function(i, item){
 

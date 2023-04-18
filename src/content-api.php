@@ -1,6 +1,11 @@
-<?php 
+<?php
+
+use ApiResponse\ApiResponse;
+use TransModel\TransModel;
+
 //require
 require_once("../basemodel/TransModel.php");
+require_once("../basemodel/ApiResponse.php");
 require_once("response.php");
 
 // route
@@ -26,7 +31,10 @@ switch ($do) {
         break;       
     case 'insert-name-asset':
         insertNameAsset();
-        break;    
+        break;
+    case 'get-list-redirect':
+        getLisRedirect();
+        break;        
     default:
         hasNotFound("Function Tidak Ditemukan");
         break;
@@ -294,4 +302,30 @@ function insertNameAsset(){
     }
 
     hasSuccess("Berhasil Menyimpan Asset");
+}
+
+function getLisRedirect(){
+    $response = new ApiResponse;
+    $brandId = $_POST['brandid'];
+    $edm = $_POST['edm'];
+
+    if ($brandId == '10'){
+        $arr =  [
+            ["name" => "Open / Read Email", "url" => "https://supresso.com/sg/public/redirect-edm/read/".$edm."/open/{email}"],
+            ["name" => "Privacy Police", "url" => "https://supresso.com/sg/public/redirect-edm/policy/".$edm."/click/{email}"],
+            ["name" => "Instagram", "url" => "https://supresso.com/sg/public/redirect-edm/instagram/".$edm."/click/{email}"],
+            ["name" => "Maps", "url" => "https://supresso.com/sg/public/redirect-edm/maps/".$edm."/click/{email}"],
+            ["name" => "Unsuscribe", "url" => "https://supresso.com/sg/public/redirect-edm/unsubscribe/".$edm."/click/{email}"],
+            ["name" => "Youtube", "url" => "https://supresso.com/sg/public/redirect-edm/youtube/".$edm."/click/{email}"],
+            ["name" => "Tiktok", "url" => "https://supresso.com/sg/public/redirect-edm/tiktok/".$edm."/click/{email}"],
+            ["name" => "Facebook", "url" => "https://supresso.com/sg/public/redirect-edm/fb/".$edm."/click/{email}"],
+            ["name" => "Hari Raya Special", "url" => "https://supresso.com/sg/public/redirect-edm/web-hariraya-sale/".$edm."/click/{email}"],
+            ["name" => "Best Seller", "url" => "https://supresso.com/sg/public/redirect-edm/web-best-seller/".$edm."/click/{email}"],
+            ["name" => "Clearance Sale", "url" => "https://supresso.com/sg/public/redirect-edm/web-clearance-sale/".$edm."/click/{email}"],
+            ["name" => "Tab Collection", "url" => "https://supresso.com/sg/public/redirect-edm/{collection-id}/".$edm."/click/{email}"],
+        ];
+        return $response->pushResult("Success", $arr, 200); 
+    }
+
+    return $response->pushResult("Cannot find any url redirect for this data", [], 200); 
 }
